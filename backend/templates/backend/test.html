@@ -1,0 +1,1905 @@
+
+
+def custom_month_order(month):
+  order = ['January','February','March','April','May','June','July','August','September','October','October','November','December'] 
+  return order.index(month)
+
+
+
+  data      = Cost_Of_Production.objects.filter(pub_date__range=[start_date, end_date]).values('pub_date','quantity')
+  formatted_data  = [{'day': entry['pub_date'].strftime('%A'), 'value': entry['quantity']} for entry in data]
+  sorted_data   = sorted(formatted_data,key=lambda x: datetime.strptime(x['day'],'%A').weekday())
+  
+
+  labels = [entry['day'] for entry in sorted_data]
+  values = [entry['value'] for entry in sorted_data]
+
+
+
+
+
+  end_date  = datetime.now()
+  start_date  = end_date - timedelta(days=6)  
+  data    = Cost_Of_Production.objects.filter(pub_date__range=[start_date, end_date]).values('pub_date','quantity')
+
+  labels = [datetime.strftime(entry['pub_date'],'%A') for entry in data]
+  values = [entry['quantity'] for entry in data]
+
+
+
+  year_labels = ['January','February','March','April','May','June','July','August','September','October','October','November','December']
+  
+  year_end_date = datetime.now()
+  year_start_date = year_end_date.replace(month=1, day=1)  # Start of the current year
+
+
+  year_data = Cost_Of_Production.objects.filter(pub_date__range=[year_start_date, year_end_date]) \
+              .values('pub_date__month') \
+              .annotate(total_value=Sum('final_amount'))
+
+  year_formatted_data  = [{'month': entry['pub_date'].strftime('%B'), 'value': entry['quantity']} for entry in year_data]
+  year_values_dict = {entry['month']: entry['value'] for entry in year_formatted_data}
+
+  #year_labels = [entry['pub_date__month'] for entry in year_data]
+  year_values = [entry['total_value'] for entry in year_data]
+
+
+
+
+
+
+
+
+
+
+  year_labels = ['January','February','March','April','May','June','July','August','September','October','October','November','December']
+  
+  current_year = datetime.now().year
+  year_start_date = datetime(current_year, 1, 1)  # Start of the current year
+
+
+  year_data = Cost_Of_Production.objects.filter(pub_date__year=current_year).values('pub_date','quantity')
+
+  year_formatted_data  = [{'month': entry['pub_date'].strftime('%B'), 'value': entry['quantity']} for entry in year_data]
+  
+  year_values_dict = {entry['month']: entry['value'] for entry in year_formatted_data}
+  year_values = [values_dict.get(label, 0) for label in year_labels]
+
+
+
+
+
+
+
+
+
+
+
+
+
+  year_end_date = datetime.now()
+  year_start_date = year_end_date.replace(month=1, day=1)  # Start of the current year
+
+
+  year_data = Cost_Of_Production.objects.filter(pub_date__range=[year_start_date, year_end_date]) \
+              .values('pub_date__month') \
+              .annotate(total_value=Sum('final_amount'))
+
+
+  year_labels = [entry['pub_date__month'] for entry in year_data]
+  year_values = [entry['total_value'] for entry in year_data]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% load static %}
+
+{% include 'backend/header.html' %}
+
+{% include 'backend/navbar.html' %}
+
+{% block content %}
+<div class="mb-4">
+  
+  <div id="wrapper">
+    <div class="content-area">
+      <div class="container-fluid">
+        <div class="main">
+          <div class="row sparkboxes mt-4">
+            <div class="col-md-3">
+              <div class="box box1">
+                <div class="details">
+                  <h3>1213</h3>
+                  <h4>General Expense</h4>
+                </div>
+                <div id="spark1"></div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="box box2">
+                <div class="details">
+                  <h3>{{get_total_revenue}}</h3>
+                  <h4>Revenue</h4>
+                </div>
+                <div id="spark2"></div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="box box3">
+                <div class="details">
+                  <h3>{{get_total}}</h3>
+                  <h4>Production</h4>
+                </div>
+                <div id="spark3"></div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="box box4">
+                <div class="details">
+                  <h3>22</h3>
+                  <h4>Forex</h4>
+                </div>
+                <div id="spark4"></div>
+              </div>
+            </div>
+          </div>
+
+<!--           <div class="row mt-4">
+            <div class="col-md-5">
+              <div class="box shadow mt-4">
+                <div id="radialBarBottom"></div>
+              </div>
+            </div>
+            <div class="col-md-7">
+              <div class="box shadow mt-4">
+                <div id="line-adwords" class=""></div>
+              </div>
+            </div>
+          </div> -->
+
+<!--           <div class="row mt-4">
+            <div class="col-md-5">
+              <div class="box shadow mt-4">
+                <div id="barchart"></div>
+              </div>
+            </div>
+            <div class="col-md-7">
+              <div class="box shadow mt-4">
+                <div id="areachart"></div>
+              </div>
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+      
+</div>
+
+ <script src="{% static 'js/apexcharts.js' %}"></script>
+ <script src="{% static 'js/scripts.js' %}"></script>
+
+
+<script type="text/javascript">
+
+  var optionsCircle4 = {
+  chart: {
+    type: 'radialBar',
+    height: 350,
+    width: 380,
+  },
+  plotOptions: {
+    radialBar: {
+      size: undefined,
+      inverseOrder: true,
+      hollow: {
+        margin: 5,
+        size: '48%',
+        background: 'transparent',
+
+      },
+      track: {
+        show: false,
+      },
+      startAngle: -180,
+      endAngle: 180
+
+    },
+  },
+  stroke: {
+    lineCap: 'round'
+  },
+  series: [85, 75, 50],
+  labels: ['April','May','June'],
+  legend: {
+    show: true,
+    floating: true,
+    position: 'right-start',
+    offsetX: 70,
+    offsetY: 240
+  },
+}
+
+var chartCircle4 = new ApexCharts(document.querySelector('#radialBarBottom'), optionsCircle4);
+chartCircle4.render();
+
+
+
+var optionsArea = {
+  chart: {
+    height: 380,
+    type: 'area',
+    stacked: false,
+  },
+  stroke: {
+    curve: 'straight'
+  },
+  series: [{
+      name: "Music",
+      data: [11, 15, 26, 20, 33, 27]
+    },
+    {
+      name: "Photos",
+      data: [32, 33, 21, 42, 19, 32]
+    },
+    {
+      name: "Files",
+      data: [20, 39, 52, 11, 29, 43]
+    }
+  ],
+  xaxis: {
+    categories: ['2011 Q1', '2011 Q2', '2011 Q3', '2011 Q4', '2012 Q1', '2012 Q2'],
+  },
+  tooltip: {
+    followCursor: true
+  },
+  fill: {
+    opacity: 1,
+  },
+
+}
+
+var chartArea = new ApexCharts(
+  document.querySelector("#areachart"),
+  optionsArea
+);
+
+chartArea.render();
+
+
+      // #get_date = Production.objects.filter(user=request.user, block=i.block.id, pub_date__week_day__gte=7)
+      // #get_date = Production.objects.filter(user=request.user, pub_date__week_day=5)
+
+      // # get_date = Production.objects.filter(user=request.user, pub_date__week_day=5).count()
+      // # print('>>>', get_date)
+      // # itemsList = Production.objects.filter(user=request.user, pub_date__gte=datetime.now() - timedelta(days=7))
+      
+
+      // # for i in itemsList:
+      // #   print('>>>>', i.block.name)
+      // #   print('>>>>', i.pub_date)
+
+      // # now = datetime.now()
+      // # print('>>>>>> date : ',now.strftime("%A"))
+
+      // # for i in now.strftime("%A"):
+      // #   print(i)
+
+      // # week = datetime.now().isocalendar()
+      // # print(">>> instance <<<<", week)
+
+
+      // # if Production.objects.filter(pub_date__week=week.week).exists():
+      // #   instance = Production.objects.filter(user=request.user, pub_date__week=week.week)
+
+      // #   for i in instance:
+      // #     print('>>>>>>', i.block.name)
+      // #     print('>>>>>>', i.pub_date)
+
+
+</script>
+
+     <div id="chart"></div>
+
+    <script>
+      
+        var options = {
+          series: [{
+          name: 'Big Hollow',
+          data: [{{get_big_hollow_count}},]
+        }, {
+          name: 'Small Hollow',
+          data: [{{get_small_hollow_count}},]
+        }, {
+          name: 'Pavers',
+          data: [{{pavers_count}},]
+        }],
+          chart: {
+          type: 'bar',
+          height: 350
+        },
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            columnWidth: '55%',
+            endingShape: 'rounded'
+          },
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          show: true,
+          width: 2,
+          colors: ['transparent']
+        },
+        xaxis: {
+          categories: [{% for i in production %} '{{i.pub_date|date:"D"}}', {% endfor%}],
+        },
+        yaxis: {
+          title: {
+            text: ' (thousands)'
+          }
+        },
+        fill: {
+          opacity: 1
+        },
+        tooltip: {
+          y: {
+            formatter: function (val) {
+              return val + " piece"
+            }
+          }
+        }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+        chart.render();
+      
+      
+    </script>
+
+<!-- <div id="chart"></div>
+
+    <script>
+      
+        var options = {
+          series: [{
+          name: 'Net Profit',
+          data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
+        }, {
+          name: 'Revenue',
+          data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
+        }, {
+          name: 'Free Cash Flow',
+          data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
+        }],
+          chart: {
+          type: 'bar',
+          height: 350
+        },
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            columnWidth: '55%',
+            endingShape: 'rounded'
+          },
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          show: true,
+          width: 2,
+          colors: ['transparent']
+        },
+        xaxis: {
+          categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+        },
+        yaxis: {
+          title: {
+            text: '$ (thousands)'
+          }
+        },
+        fill: {
+          opacity: 1
+        },
+        tooltip: {
+          y: {
+            formatter: function (val) {
+              return "$ " + val + " thousands"
+            }
+          }
+        }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+        chart.render();
+      
+      
+    </script> -->
+    
+
+    <div id="mchart"></div>
+
+    <script>
+      
+        var options = {
+          series: [{
+          name: 'Yearly Profit',
+          data: [{
+            x: '2011',
+            y: 1292
+          }, {
+            x: '2012',
+            y: 4432
+          }, {
+            x: '2013',
+            y: 5423
+          }, {
+            x: '2014',
+            y: 6653
+          }, {
+            x: '2015',
+            y: 8133,
+            fillColor: '#EB8C87',
+            strokeColor: '#C23829'
+          }, {
+            x: '2016',
+            y: 7132
+          }, {
+            x: '2017',
+            y: 7332
+          }, {
+            x: '2018',
+            y: 6553
+          }]
+        }],
+          chart: {
+          height: 350,
+          type: 'bar',
+        },
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            columnWidth: '60%'
+          },
+        },
+        stroke: {
+          width: 0,
+        },
+        dataLabels: {
+          enabled: false
+        },
+        yaxis: {
+          labels: {
+            formatter: function(val) {
+              return val / 1000 + 'K $'
+            }
+          }
+        },
+        fill: {
+          opacity: 1,
+        },
+        xaxis: {
+          type: 'datetime'
+        }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#mchart"), options);
+        chart.render();
+       
+    </script>
+
+    <div id="ichart"></div>
+
+    <script>
+      
+        var options = {
+          series: [{
+          name: 'TEAM A',
+          type: 'area',
+          data: [44, 55, 31, 47, 331, 43, 26, 41, 31, 47, 33]
+        }, {
+          name: 'TEAM B',
+          type: 'area',
+          data: [55, 69, 45, 61, 43, 54, 37, 52, 44, 61, 2243]
+        }, {
+          name: 'TEAM B',
+          type: 'area',
+          data: [55, 569, 345, 161, 403, 54, 37, 52, 44, 61, 243]
+        }],
+          chart: {
+          height: 350,
+          type: 'line',
+        },
+        stroke: {
+          curve: 'smooth'
+        },
+        fill: {
+          type:'solid',
+          opacity: [0.35, 1],
+        },
+        labels: ['Dec 01', 'Dec 02','Dec 03','Dec 04','Dec 05','Dec 06','Dec 07','Dec 08','Dec 09 ','Dec 10','Dec 11'],
+        markers: {
+          size: 0
+        },
+        yaxis: [
+          {
+            title: {
+              text: 'Series A',
+            },
+          },
+          {
+            opposite: true,
+            title: {
+              text: 'Series B',
+            },
+          },
+        ],
+        tooltip: {
+          shared: true,
+          intersect: false,
+          y: {
+            formatter: function (y) {
+              if(typeof y !== "undefined") {
+                return  y.toFixed(0) + " points";
+              }
+              return y;
+            }
+          }
+        }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#ichart"), options);
+        chart.render();
+      
+      
+    </script>
+
+
+{% endblock content %} 
+{% include 'backend/footer.html' %}
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--Navbar-->
+<nav class="navbar navbar-expand-lg navbar-dark primary-color">
+
+  <!-- Navbar brand -->
+  <a class="navbar-brand" href="#">Websys</a>
+
+  <!-- Collapse button -->
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
+    aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <!-- Collapsible content -->
+  <div class="collapse navbar-collapse" id="basicExampleNav">
+
+    <!-- Links -->
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'home' %}">Home
+          <!-- <span class="sr-only">(current)</span> -->
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'cost_production' %}">Cost of Production</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'maintenance' %}">Maintainance</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'fixed_cost' %}">Fixed Cost</a>
+      </li>
+
+      <!-- Dropdown -->
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">Transportation</a>
+        <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="{% url 'block_transportation' %}">Block Transportation</a>
+          <a class="dropdown-item" href="{% url 'material_transportation' %}">Material Transportation</a>
+          <a class="dropdown-item" href="{% url 'other_transportation' %}">Other Transportation</a>
+        </div>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'other_expenses' %}">Other Expenses</a>
+      </li>
+
+        <!-- Dropdown -->
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">Sale</a>
+        <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="{% url 'sale' %}">Cash & Credit</a>
+          <a class="dropdown-item" href="{% url 'partial_sale' %}">Partial</a>
+        </div>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'debt_repayment' %}">Debt Repayment</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'other_income' %}">Other Income</a>
+      </li>
+
+
+      <!-- Dropdown -->
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">Production</a>
+        <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="{% url 'production' %}">Production</a>
+          <a class="dropdown-item" href="{% url 'opening_stock' %}">Opening Stock</a>
+          <a class="dropdown-item" href="{% url 'piling_damages' %}">Damages</a>
+        </div>
+      </li>
+
+    </ul>
+    <!-- Links -->
+    {% if request.user.is_authenticated %}
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="#">Hello, {{ request.user}}</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+      </li>
+      {% else %}
+      <li class="nav-item">
+          <a class="nav-link" href="">Logout</a>
+      </li>
+      {% endif %}
+    </ul>
+
+  </div>
+  <!-- Collapsible content -->
+
+</nav>
+<!--/.Navbar-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% load static %}
+
+{% include 'backend/header.html' %}
+
+{% include 'backend/navbar.html' %}
+
+{% block content %}
+
+  <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+      <h1 class="h2">Dashboard</h1>
+      <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+          <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+          <span data-feather="calendar"></span>
+          This week
+        </button>
+      </div>
+    </div>
+
+    <div class="main">
+
+      <div class="row sparkboxes mt-4">
+        <div class="col-md-3">
+          <div class="box box1">
+            <div class="details">
+            <h3>1213</h3>
+            <h4>General Expense</h4>
+            </div>
+            <div id="spark1"></div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="box box2">
+            <div class="details">
+            <h3>{{get_total_revenue}}</h3>
+            <h4>Revenue</h4>
+            </div>
+            <div id="spark2"></div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="box box3">
+            <div class="details">
+            <h3>{{get_total}}</h3>
+            <h4>Production</h4>
+            </div>
+            <div id="spark3"></div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="box box4">
+            <div class="details">
+            <h3>22</h3>
+            <h4>Forex</h4>
+            </div>
+            <div id="spark4"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-md-12">
+          <div id="chart"></div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-md-12">
+          <div id="ichart"></div>
+        </div>
+      </div>
+    </div>
+
+
+  </main>
+
+
+<script src="{% static 'js/apexcharts.js' %}"></script>
+<script src="{% static 'js/scripts.js' %}"></script> 
+
+
+    <script>
+      
+        var options = {
+          series: [{
+          name: 'Big Hollow',
+          data: [{{get_big_hollow_count}},]
+        }, {
+          name: 'Small Hollow',
+          data: [{{get_small_hollow_count}},]
+        }, {
+          name: 'Pavers',
+          data: [{{pavers_count}},]
+        }],
+          chart: {
+          type: 'bar',
+          height: 350
+        },
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            columnWidth: '55%',
+            endingShape: 'rounded'
+          },
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          show: true,
+          width: 2,
+          colors: ['transparent']
+        },
+        xaxis: {
+          categories: [{% for i in production %} '{{i.pub_date|date:"D"}}', {% endfor%}],
+        },
+        yaxis: {
+          title: {
+            text: ' (thousands)'
+          }
+        },
+        fill: {
+          opacity: 1
+        },
+        tooltip: {
+          y: {
+            formatter: function (val) {
+              return val + " piece"
+            }
+          }
+        }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+        chart.render();
+      
+      
+    </script>
+
+    <script>
+      
+        var options = {
+          series: [{
+          name: 'TEAM A',
+          type: 'area',
+          data: [44, 55, 31, 47, 331, 43, 26, 41, 31, 47, 33]
+        }, {
+          name: 'TEAM B',
+          type: 'area',
+          data: [55, 69, 45, 61, 43, 54, 37, 52, 44, 61, 2243]
+        }, {
+          name: 'TEAM B',
+          type: 'area',
+          data: [55, 569, 345, 161, 403, 54, 37, 52, 44, 61, 243]
+        }],
+          chart: {
+          height: 350,
+          type: 'line',
+        },
+        stroke: {
+          curve: 'smooth'
+        },
+        fill: {
+          type:'solid',
+          opacity: [0.35, 1],
+        },
+        labels: ['Dec 01', 'Dec 02','Dec 03','Dec 04','Dec 05','Dec 06','Dec 07','Dec 08','Dec 09 ','Dec 10','Dec 11'],
+        markers: {
+          size: 0
+        },
+        yaxis: [
+          {
+            title: {
+              text: 'Series A',
+            },
+          },
+          {
+            opposite: true,
+            title: {
+              text: 'Series B',
+            },
+          },
+        ],
+        tooltip: {
+          shared: true,
+          intersect: false,
+          y: {
+            formatter: function (y) {
+              if(typeof y !== "undefined") {
+                return  y.toFixed(0) + " points";
+              }
+              return y;
+            }
+          }
+        }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#ichart"), options);
+        chart.render();
+      
+      
+    </script>
+{% endblock content %} 
+{% include 'backend/footer.html' %}
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% load static %}
+
+{% include 'backend/header.html' %}
+
+{% block content %}
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        {% include 'backend/sidebar.html' %}
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content" style="background-color: white;">
+
+                <!-- Topbar -->
+                {% include 'backend/navbar.html' %}
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                      <!--Grid column-->
+                      <div class="col-md-12 mb-5">
+
+                          <!-- Page Heading -->
+                          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                              <h4 class="h4 mb-0 text-gray-800">Add Cost of Production</h4>
+                          </div>
+
+                        <div class="card">
+
+                          <div class="card-body">
+
+                            <form id="contact-form" action="" method="POST" enctype="multiparts/form-data" class="needs-validation" novalidate>
+
+                              {% csrf_token %}
+                              <!--Grid row-->
+                             
+                              <div class="row">
+         
+                                  <div class="col-md-4" >
+                                    <label for="name"> Particulars</label>
+                                    <div class="d-sm-flex align-items-center justify-content-between">
+                                      <select class="form-control mr-2" name="particulars" id="id_particulars" required>
+                                        <option value="">Select Particulars</option>
+                                        {% for i in get_particulars %}
+                                        <option value="{{i.id}}">{{i.name}}</option>
+                                        {% endfor %}
+                                      </select>
+                                      <div >
+                                      <a class="btn btn-primary" href="#" data-toggle="modal" data-target="#logoutModal">
+                                        +
+                                      </a>
+                                    </div>
+                                  </div>
+                                                                     
+                                  <div class="col-md-4">
+                                    <!-- Default input -->
+                                    <label for="exampleForm2">Quantity</label>
+                                    <input type="number" class="form-control" name="quantity" id="id_quantity" required>
+                                  </div>
+                                  <!--Quantity-->
+
+                                 <!--Grid column-->
+                                  <div class="col-md-4">
+                                      <label for="name" class="">Unit</label>
+                                      <select class="form-control form-select" name="unit" id="id_unit" required>
+                                        <option value="" >Select Unit</option>
+                                        {% for i in get_units %}
+                                        <option value="{{i.id}}">{{i.name}}</option>
+                                        {% endfor %}
+                                      </select>
+                                  </div>
+                                
+
+                              </div>
+                              <!--Grid row-->
+
+
+                              <!--Grid row-->
+                              <div class="row" style="margin-top: 25px; margin-bottom: 25px; ">
+
+                                <!--Grid column-->
+                                  <div class="col-md-4">
+                                      <label for="name" class="">Currency</label>
+                                      <select class="form-control form-select" name="currency" id="id_currency" required>
+                                        <option value="" >Select Currency</option>
+                                        {% for i in get_currency %}
+
+                                          {% if i.name %}  
+                                            <option value="{{i.id}}">{{i.name}}</option>
+                                          {% else %}
+                                            <option>NOT Available Please Add </option>
+                                          {% endif %}
+
+                                        {% endfor %}
+                                      </select>
+                                  </div>
+                                  <!--Grid column-->
+
+                                  <div class="col-md-4">
+                                                                    
+                                    <label for="exampleForm2">Unit Price</label>
+                                    <input type="number" class="form-control" name="unit_price" id="id_unit_price" required>
+
+                                  </div>
+
+                                <div class="col-md-4">
+                                                                    
+                                    <label for="exampleForm2">Discount</label>
+                                    <input type="number" id="exampleForm2" class="form-control" name="discount" id="id_discount" required>
+
+                                  </div>
+                              </div> 
+                              <!--Grid row-->
+
+                                <div class="text-center text-md-left">
+                                  <button class="btn btn-success" type="submit">Submit</button>
+                                  <a href="{% url 'cost_production' %}" class="btn btn-danger">Cancel</a>
+                              </div>
+
+
+                                  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                                      aria-hidden="true">
+                                      <div class="modal-dialog" role="document">
+                                          <div class="modal-content">
+                                              <div class="modal-header">
+                                                  <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                                                  <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                      <span aria-hidden="true">×</span>
+                                                  </button>
+                                              </div>
+                                              <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                                              <div class="modal-footer">
+                                                  <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                                                  <a class="btn btn-primary" href="login.html">Logout</a>
+                                              </div>
+                                          </div>
+                                      </div>
+                                    </div>
+
+                          </form>
+                            
+                          </div>
+                          
+                        </div>
+
+                      </div>
+                      <!--Grid column-->
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+  <script type="text/javascript">
+    
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+      (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+          .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+              if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+              }
+
+              form.classList.add('was-validated')
+            }, false)
+          })
+      })()
+
+
+  </script>
+
+
+{% endblock content %}
+
+{% include 'backend/footer.html' %}
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       <div class="card shadow mb-4">
+
+          <div class="card-body">
+              <div class="table-responsive">
+                  <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                      <thead>
+                          <tr>
+                              <!-- <th>S/No</th> -->
+                              <th>Particulars</th>
+                              <th>Quatity</th>
+                              <th>Discount</th>
+                              <th>Amount</th>
+                              <th>Currency</th>
+                              <th>Status</th>
+                              <th>Added by</th>
+                              <th>Edit</th>
+                              
+                              {% if request.user.is_superuser %}
+                              <th>Delete</th>
+                              {% endif %}
+
+                          </tr>
+                      </thead>
+                      <tbody>
+
+                        {% for i in get_cost_of_production %}
+                        <tr>
+                            <!-- <td>{{forloop.counter}}</td> -->
+                            <td>{{i.particulars}}</td>
+                            <td>{{i.quantity}}</td>
+                            <td>{{i.discount}}</td>
+                            <td>{{i.final_amount}}</td>
+                            <td>{{i.currency}}</td>
+
+
+                            {% if request.user.is_superuser %}
+
+                                {% if i.status == "Pending" %}
+                                  <td><a class="btn btn-primary btn-sm text-center" href="{% url 'cost_of_production_status' i.id %}">
+                                      <i class="fas fa-info-circle"></i> Pending
+                                  </a></td>
+                                {% endif %}
+
+                      
+                                {% if i.status == "Processing" %}
+                                <td><a class="btn btn-info btn-sm text-center" href="{% url 'cost_of_production_status' i.id %}"><i class="fas fas fa-flag"></i> Processing </a></td>
+                                {% endif %}
+
+                                {% if i.status == "Approve" %}
+                                <td>
+                                  <a class="btn btn-success btn-sm text-center" href="{% url 'cost_of_production_status' i.id %}"><i class="fas fas fa-check"></i> Approve </a>
+                                </td>
+                                {% endif %}
+
+                            {% else %}
+                          
+
+                                {% if i.status == "Pending" %}
+                                  <td><button class="btn btn-primary btn-sm text-center">
+                                      <i class="fas fa-info-circle"></i> Pending
+                                  </button></td>
+                                {% endif %}
+
+
+                                {% if i.status == "Processing" %}
+                                <td><button class="btn btn-info btn-sm text-center"><i class="fas fas fa-flag"></i> Processing </button></td>
+                                {% endif %}
+
+                                {% if i.status == "Approve" %}
+                                <td>
+                                  <button class="btn btn-success btn-sm text-center"><i class="fas fas fa-check"></i> Approve 
+                                  </button>
+                                  </td>
+                                {% endif %}
+
+
+                            {% endif %}
+
+                            <td>{{i.user}}</td>
+
+                            {% if request.user.is_superuser %}
+
+                             <td>      
+                                <a href="{% url 'edit_cost_production' i.id %}" class="btn btn-inf0">
+                                  <i class="fas fa-pen"></i>
+                                </a>
+                            </td>
+
+                            <td>
+                              <a href="{% url 'delete_cost_production' i.id %}" class="btn btn-inf0" >
+                                  <i class="fas fa-trash"></i>
+                              </a>
+                            </td>
+
+                            {% else %}
+
+                            {% if i.status == "Approve" %}
+
+                             <td>      
+                                <button class="btn btn-inf0">
+                                  <i class="fas fa-pen"></i>
+                                </button>
+                             </td>
+
+                             {% else %}
+
+
+                             <td>      
+                                <a href="{% url 'edit_cost_production' i.id %}" class="btn btn-inf0" style="color: lightgreen;">
+                                  <i class="fas fa-pen"></i>
+                                </a>
+                             </td>
+
+                             {% endif %}
+
+
+                            {% endif %}
+
+
+
+                      </tr>
+
+                            <div class="modal fade" id="delete_production" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                              aria-hidden="true">
+                              <div class="modal-dialog" role="document">
+                                  <div class="modal-content">
+                                      <div class="modal-header">
+                                          <h5 class="modal-title " id="exampleModalLabel">Are you sure want to delete {{i.particulars}} ?</h5>
+                                          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">×</span>
+                                          </button>
+                                      </div>
+                                      <form action="{% url 'delete_cost_production'  i.id %}" method="POST" enctype="multiparts/form-data">
+                                          {% csrf_token %}
+
+                                          <div class="modal-body text-center">You won't be able to revert this! </div>
+                                          <div class="modal-footer">
+                                                <button class="btn btn-danger" type="submit">Delete</button>
+                                                <button class="btn btn-primary" type="button" data-dismiss="modal">Cancel</button>
+                                          </div>
+                                      </form>
+                                  </div>
+                              </div>
+                          </div> 
+
+                        {% endfor %}
+
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+       </div>  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="card mt-4 mb-4">
+
+    <div class="card-body">
+   
+      <div class="row">
+
+         <div class="col-md-3">
+              <label for="name"> Item </label>
+              <select class="browser-default custom-select" name="block" required>
+                <option value="" >Select Item</option>
+                {% for i in get_block %}
+                <option value="{{i.id}}">{{i.name}}</option>
+                {% endfor %}
+              </select>
+          </div>
+
+          <div class="col-md-2">
+                                            
+            <label for="exampleForm2">Unit Price</label>
+            <input type="number" class="form-control" name="unit_price" required>
+
+          </div>
+                                        
+          <div class="col-md-2">
+            <!-- Default input -->
+            <label for="exampleForm2">Quantity Sold </label>
+            <input type="number" class="form-control" name="quantity_sold" required>
+
+          </div>
+          <!--Quantity-->
+
+         <div class="col-md-2">
+                                            
+            <label for="exampleForm2">Discount</label>
+            <input type="number" id="exampleForm2" class="form-control" name="discount" required="">
+
+        </div>
+
+        <!--Grid column-->
+          <div class="col-md-3">
+              <label for="name" class="">Currency</label>
+              <select class="browser-default custom-select" name="currency" required>
+                <option value="" >Select Currency</option>
+
+                {% for i in currency %}
+
+                  {% if i.name %}  
+                    <option value="{{i.id}}">{{i.name}}</option>
+                  {% else %}
+                    <option>NOT Available Please Add </option>
+                  {% endif %}
+
+                {% endfor %}
+              </select>
+          </div>
+          <!--Grid column-->
+      
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+
+        // let minDate, maxDate;
+         
+        // // Custom filtering function which will search data in column four between two values
+        // DataTable.ext.search.push(function (settings, data, dataIndex) {
+        //     let min = minDate.val();
+        //     let max = maxDate.val();
+        //     let date = new Date(data[4]);
+         
+        //     if (
+        //         (min === null && max === null) ||
+        //         (min === null && date <= max) ||
+        //         (min <= date && max === null) ||
+        //         (min <= date && date <= max)
+        //     ) {
+        //         return true;
+        //     }
+        //     return false;
+        // });
+         
+        // // Create date inputs
+        // minDate = new DateTime('#min', {
+        //     format: 'MMMM Do YYYY'
+        // });
+        // maxDate = new DateTime('#max', {
+        //     format: 'MMMM Do YYYY'
+        // });
+         
+        // // DataTables initialisation
+        // let table = new DataTable('#example');
+         
+        // // Refilter the table
+        // document.querySelectorAll('#min, #max').forEach((el) => {
+        //     el.addEventListener('change', () => table.draw());
+        // });
+
+
+
+        var minDate, maxDate;
+
+        $.fn.dataTable.ext.search.push(
+          function(settings, data, dataIndex) {
+            var min = minDate.val();
+            var max = maxDate.val();
+            var date = new Date(data[5]);
+
+            if (
+              (min === null && max === null) ||
+              (min === null && date <= max) ||
+              (min <= date && max === null) ||
+              (min <= date && date <= max)
+            ) {
+              return true;
+            }
+            return false;
+          }
+        );
+
+        function initializeMinMax() {
+          minDate = new DateTime($('#min'), {
+            format: 'MMMM Do YYYY'
+          });
+          maxDate = new DateTime($('#max'), {
+            format: 'MMMM Do YYYY'
+          });
+        }
+
+        $(document).ready(function() {
+
+          initializeMinMax();
+
+
+        var table_ = $('#example').DataTable();
+
+          $("#filtrar_fecha").click(function() {
+
+            table_.draw();
+          });
+
+          $("#reset_filtrar_fecha").click(function() {
+            $.fn.dataTable.ext.search.pop();
+            $("#min").val('');
+            $("#max").val('');
+            initializeMinMax();
+            table_.draw();
+          });
+        });
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        {% include 'backend/sidebar.html' %}
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content" style="background-color: white;">
+
+                <!-- Topbar -->
+                {% include 'backend/navbar.html' %}
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                     {% if messages %}
+                      <div class="alert alert-info alert-dismissible fade show" role="alert">
+                          {% for message in messages %}                     
+                              {{ message }}
+                          {% endfor %}
+                      </div>
+                      {% endif %}
+
+                    <!-- Content Row -->
+
+
+                    <!-- Page Heading -->
+                     <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-2">
+                        <h5 class="h5 mb-0 text-gray-1500">Cost of Production General Report </h5>
+                        <div>
+                            <a href="{% url 'add_cost_production' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"> Add Transaction <i class="fas fa-plus text-white-50"> </i> </a>
+                            <a href="{% url 'cost_production' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"> Return <i class="fas fa-arrow-right text-white-50"> </i> </a>
+                        </div>
+                    </div> 
+
+                    <!-- DataTales Example -->
+
+                   <div class="card shadow mb-4">
+
+                      <div class="card-body">
+                            <div class="d-sm-flex align-items-center justify-content-between mt-2 ">
+                                <div class="d-sm-flex align-items-center justify-content-between mb-2 mt-2">
+                                    <input class="form-control mr-2" type="text" id="min">
+                                    <input class="form-control" type="text" id="max" >
+                                    
+                                    <button class="btn btn-primary mr-2 ml-2" id="filtrar_fecha">Search</button>
+                                    <button class="btn btn-light border " id="reset_filtrar_fecha">Clear</button>
+                                </div>
+
+                                <div>
+
+                                </div>
+                            </div>
+                            <hr>
+                              <table id="example" class="table table-bordered dataTable" width="100%" cellspacing="0">
+                                  <thead>
+                                      <tr>
+                                          <th>S/No</th>
+                                          <th>Particulars</th>
+                                          <th>Qty</th>
+                                          <th>Unit</th>
+                                          <th>Price</th>
+                                          <th>Discount</th>
+                                          <th>Amount</th>
+                                          <th>Payment</th>
+                                          <th>Currency</th>
+                                          <th>User</th>
+                                          <th>Date</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+
+                                    {% for i in get_cost_of_production %}
+                                    <tr>
+                                        <td>{{forloop.counter}}</td> 
+                                        <td>Mixed Core</td>
+                                        <td>2</td>
+                                        <td>Piece</td>
+                                        <td>30.0</td>
+                                        <td>0.0</td>
+                                        <td>{{i.final_amount}}</td>
+                                        <td>{{i.status}}</td>
+                                        <td>{{i.currency}}</td>
+                                        <td>{{i.user}}</td>
+                                        <td>{{i.pub_date}}</td>
+
+                                     </tr>
+                                    {% endfor %}
+
+                                </tbody>
+                            </table >
+
+                          </div>
+                      </div>
+
+                   </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+
+
+
+
+
+<!-- <script type="application/javascript">
+
+    $(document).ready(function () {
+        var Table1 = $("[id*=Table1]").prepend($("<thead></thead>").append($("[id*=Table1]").find("tr:first"))).DataTable({
+            "paging": false,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "filters": true,
+            "autoWidth": true,
+            "responsive": true,
+            "dom": 'lBfrtip',
+            "order": [
+                [1, "desc"]
+            ],
+            "buttons": [{
+                extend: 'print',
+            },
+            {
+                extend: 'excel',
+            }, {
+                extend: 'pdfHtml5',
+                title: function () {
+                    return "PDF Export";
+                },
+                orientation: 'landscape',
+                pageSize: 'A0',
+                titleAttr: 'PDF'
+            }
+            ],
+        });
+    });
+
+</script> -->
+
+
+
+
+
+// new DataTable('#example', {
+//     columnDefs: [
+//     {
+//         orderable: false,
+//         className: 'select-checkbox',
+//         targets: 0
+        
+//         }
+//     ],
+//     select: {
+//         style: 'os',
+//         selector: 'td:first-child'
+//     },
+//     order: [[1, 'asc']]
+// });
+
+
+
+
+   $(document).ready(function () {
+    // Setup - add a text input to each footer cell
+        $('#example thead tr')
+            .clone(true)
+            .addClass('filters')
+            .appendTo('#example thead');
+     
+        var table = $('#example').DataTable({
+            orderCellsTop: true,
+            fixedHeader: true,
+            initComplete: function () {
+                var api = this.api();
+     
+                // For each column
+                api
+                    .columns()
+                    .eq(0)
+                    .each(function (colIdx) {
+                        // Set the header cell to contain the input element
+                        var cell = $('.filters th').eq(
+                            $(api.column(colIdx).header()).index()
+                        );
+                        var title = $(cell).text();
+                        $(cell).html('<input type="text" placeholder="' + title + '" />');
+     
+                        // On every keypress in this input
+                        $(
+                            'input',
+                            $('.filters th').eq($(api.column(colIdx).header()).index())
+                        )
+                            .off('keyup change')
+                            .on('change', function (e) {
+                                // Get the search value
+                                $(this).attr('title', $(this).val());
+                                var regexr = '({search})'; //$(this).parents('th').find('select').val();
+     
+                                var cursorPosition = this.selectionStart;
+                                // Search the column for that value
+                                api
+                                    .column(colIdx)
+                                    .search(
+                                        this.value != ''
+                                            ? regexr.replace('{search}', '(((' + this.value + ')))')
+                                            : '',
+                                        this.value != '',
+                                        this.value == ''
+                                    )
+                                    .draw();
+                            })
+                            .on('keyup', function (e) {
+                                e.stopPropagation();
+     
+                                $(this).trigger('change');
+                                $(this)
+                                    .focus()[0]
+                                    .setSelectionRange(cursorPosition, cursorPosition);
+                            });
+                    });
+            },
+        });
+
+    });
+
+
+
+
+<div class="row" style="margin-top: 15px; ">
+
+<div class="col-md-6">
+        <label for="productName">Product Name:</label>
+        <select id="productName" name="productName" class="js-example-basic-single form-control " required>
+            <option value="Product 1" data-price="10.00">Product 1</option>
+            <option value="Product 2" data-price="20.00">Product 2</option>
+            <option value="Product 3" data-price="30.00">Product 3</option>
+        </select>
+    </div>
+
+</div>
+ <div class="col-md-6">
+    <label for="price">Price:</label>
+    <input type="text" id="price" name="price" class="form-control rounded-0" readonly>     
+ </div>
+
+    // Initialize Select2
+    // $(document).ready(function () {
+    //     $('.js-example-basic-single').select2({
+    //       width: 'resolve',
+    //       placeholder: "select a state",
+    //       allowClear: true,
+    //       height: 'resolve',
+    //       theme: "classic",
+    //     });
+
+    //     $('productName').on('change', function(){
+    //        updatePrice()
+    //      });
+    // });
+
+
+    $(document).ready(function () {
+    $('.js-example-basic-single').select2();
+
+    // Call updateAmount when product selection changes
+    $('#productName').on('change', function () {
+        updateAmount();
+    });
+      });
+
+      function updateAmount() {
+          var priceInput = document.getElementById("price");
+          var quantityInput = document.getElementById("quantity");
+          var amountInput = document.getElementById("amount");
+
+          var price = parseFloat($("#productName option:selected").data("price"));
+          var quantity = parseInt(quantityInput.value);
+
+          var amount = isNaN(price) || isNaN(quantity) ? "" : (price * quantity).toFixed(2);
+          amountInput.value = amount;
+          priceInput.value = isNaN(price) ? "" : price.toFixed(2);
+      }
+
+
+
+    function updatePrice() {
+        var priceInput = document.getElementById("price");
+        var selectedProduct = $("#productName option:selected");
+        var price = parseFloat(selectedProduct.data("price"));
+
+        priceInput.value = isNaN(price) ? "" : price.toFixed(2);
+        updateAmount(); // Call the function to update the amount after updating the price
+    }
+
+
+  <script src="{% static 'vendor/datatables/jquery-3.7.0.js' %}"></script>
+  <script src="{% static 'vendor/datatables/select2.min.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'css/select2.min.css' %}" />

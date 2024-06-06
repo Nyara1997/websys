@@ -1,0 +1,394 @@
+{% load static %}
+
+{% include 'backend/header.html' %}
+
+{% block content %}
+
+
+<!-- Page Wrapper -->
+    <div id="wrapper">
+
+      <style type="text/css">
+        .table td, .table th {
+            padding: 0.75rem;
+            vertical-align: middle;
+            border-top: 1px solid #e3e6f0;
+        }
+      </style>
+
+        <!-- Sidebar -->
+        {% include 'backend/sidebar.html' %}
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content" style="background-color: white;">
+
+                <!-- Topbar -->
+                {% include 'backend/navbar.html' %}
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid" style="margin-bottom: 250px;">
+
+                   {% if messages %}
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        {% for message in messages %}                     
+                            {{ message }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="col-md-12 mb-5">
+
+                          <!-- Page Heading -->
+                          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                              <h4 class="h4 mb-0 text-gray-800">Add Maintenance </h4>
+                          </div>
+
+                            <form action="." method="POST" enctype="multiparts/form-data" >
+
+                              {% csrf_token %}
+
+                              <input type="hidden" name="formset-TOTAL_FORMS" value="5" id="id_formset-TOTAL_FORMS">
+                              <input type="hidden" name="formset-INITIAL_FORMS" value="0" id="id_formset-INITIAL_FORMS">
+                              <input type="hidden" name="formset-MIN_NUM_FORMS" value="0" id="id_formset-MIN_NUM_FORMS">
+                              <input type="hidden" name="formset-MAX_NUM_FORMS" value="100" id="id_formset-MAX_NUM_FORMS">
+
+
+                              <div class="card">
+
+                                  <div class="card-body">
+                                    <!--Grid row-->
+                                    <div class="row">
+
+                                        <!--column1-->
+                                        <div class="col-md-3">
+                                            <!-- Default input -->
+                                            <label for="maintenance">Maintainance</label>
+
+                                            <div class=" input-group d-sm-flex align-items-center justify-content-between">
+                                                <select class="browser-default custom-select" name="maintenance" >
+                                                    <option>Select Category</option>
+                                                    {% for i in maintenance_type %}
+                                                    <option value="{{i.id}}">{{i.name}}</option>
+                                                    {% endfor  %}
+                                                </select>
+                                              <div class="input-group-append">
+                                                <a href="" class="btn btn-primary" data-toggle="modal" data-target="#add_maintainance">
+                                                    <i class="fas fa-plus fa-sm"></i>
+                                                </a>
+                                              </div>
+                                          </div>
+
+                                        </div>
+                                        
+                                        <div class="col-md-3">  
+                                          <label for="pub_date">Issued Date</label>
+                                          <input type="date" id="pub_date" class="form-control" name="pub_date" >
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                              <label for="exampleFormControlTextarea1">Description</label>
+                                              <textarea class="form-control rounded-0" id="exampleFormControlTextarea1" rows="4" name="description1" ></textarea>
+                                            </div>
+                                        </div>
+
+                                        
+                                    </div>
+                                    
+
+                                  </div>
+
+                              </div>
+
+                             <div class="mt-4">
+
+                                  <div class="d-sm-flex align-items-center justify-content-between mb-3 ">
+                                      <h6 class="h5 mb-0 text-gray-800">List Expenses</h6>
+                                  </div>
+
+                                  <div class="table-responsive">
+
+                                  <table class="table table-bordered">
+
+                                      <thead style="background-color: #f8f9fc; ">
+                                        <tr>
+                                          <th style="width: 100px; text-align: center;">S/No.</th>
+                                          <th style="width: 250px; text-align: left;">Description</th>
+                                          <th style="width: 130px; text-align: center;">Qty</th>
+                                          <th style="width: 150px; text-align: center;">Price</th>
+                                          <th style="width: 150px; text-align: center;">Discount</th>
+                                          <th style="width: 150px; text-align: center;">Amount</th>
+                                          <th style="width: 150px; text-align: center;">Currency</th>
+                                          <th style="width: 50px; text-align: center;">Delete ? </th>
+                                        </tr>
+                                        </thead>
+                                        <tfoot>
+                                          <tr>
+                                            <td colspan="3" class="text-center margin-0"> Total</td>
+                                            <td>
+                                              <input class="form-control border-0" type="number" id="quantity_total" name="quantity_total"  />
+                                            </td>
+                                            <td>
+                                              <input class="form-control border-0" type="number" id="discount_total" name="discount_total" />
+                                            </td>
+                                            <td>
+                                              <input class="form-control border-0" type="number" id="total" name="total"  />
+                                            </td>
+                                            <td></td>
+                                            <td class="text-center">
+                                              <a class="btn btn-light border btn-sm btn-circle add_count" onclick="addRow()">
+                                              <i class="fas fa-plus"></i>
+                                              </a>   
+                                            </td>
+                                          </tr>
+                                        </tfoot>
+                                        <tbody id="calculation">
+                                        {% for i in "12345" %}
+                                          <tr class="row-number">
+                                            <td class="text-center">
+                                              {{forloop.counter}}
+                                            </td>
+                                            <td>
+                                                <input type="text" name="formset-{{forloop.counter0}}-description2" class="form-control border-0 multi" >
+                                            </td>
+                                            <td>
+                                              <input type="number" name="formset-{{forloop.counter0}}-quantity" id="quantity" class="form-control border-0 qcount multi" >
+                                            </td>
+                                            <td>
+                                              <input type="number" name="formset-{{forloop.counter0}}-unit_price" id="price" class="form-control border-0 multi" >
+                                            </td>
+                                            <td>
+                                              <input type="number" name="formset-{{forloop.counter0}}-discount" id="discount" class="form-control border-0 dcount multi" >
+                                            </td>
+                                            <td>
+                                              <input type="number" name="formset-{{forloop.counter0}}-data_amount" id="amount" class="form-control border-0 amount"  >
+                                            </td>
+                                            <td>
+                                              <select class="form-control form-select border-0" name="formset-{{forloop.counter0}}-currency" id="id_currency" >
+                                                <option></option>
+                                                {% for value, display_name in currency %}
+                                                    <option value="{{value}}">{{display_name}}</option>
+                                                {% endfor %}
+                                              </select>
+                                            </td>
+                                            <td class="text-center">
+                                              <button class="btn btn-danger btn-circle btn-sm removeBtn" >
+                                                <i class="fas fa-trash"></i>
+                                               </button>
+                                            </td>
+                                          </tr>
+                                          {% endfor %}
+                                        </tbody>
+
+                                    </table>
+
+                                  </div>
+                                  
+                              </div> 
+
+                           <div class="text-center text-md-left mt-4">
+                              <button class="btn btn-primary" type="submit">Submit</button>
+                              <a href="{% url 'maintenance' %}" class="btn btn-danger">Cancel</a>
+                          </div>
+
+                      </form>
+                  
+                   </div>
+
+              </div>
+
+          </div>
+
+
+      </div>
+
+
+  </div>
+
+
+<div class="modal fade" id="add_maintainance" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title " id="exampleModalLabel">Add Maintainance</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <form action="" method="POST" enctype="multiparts/form-data">
+                {% csrf_token %}
+
+                <div class="container mt-3 mb-3">
+                  <div class="row">
+                    <label for="exampleForm2">Maintainance</label>
+                    <input type="text" class="form-control" name="maintenance_type" id="id_maintenance_type" required>
+                  </div>
+                  
+                </div>
+                <div class="modal-footer">
+                      <button class="btn btn-danger" type="submit">Add</button>
+                      <button class="btn btn-primary" type="button" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+  <script src="{% static 'vendor/datatables/jquery-3.7.0.js' %}"></script>
+
+
+  <script type="text/javascript">
+
+
+   $(document).ready(function(){
+
+    $('#calculation').on("keyup",".multi",function(){
+      var parent = $(this).closest('tr');
+      var quant= $(parent).find('#quantity').val();
+      var price= $(parent).find('#price').val();
+      var discount= $(parent).find('#discount').val();
+
+    $(parent).find('#amount').val(quant* price - discount);
+        GrandTotal();
+
+      });
+
+
+
+   $(document).ready(function(){
+
+     //Remove row button click event
+     $(document).on("click", ".removeBtn", function () {
+        $(this).closest("tr").remove();
+
+       GrandTotal();
+       updateRowNumbers();
+        
+     });
+
+
+  });
+
+
+    function GrandTotal(){
+
+       var sum=0;
+
+           $('.amount').each(function(){
+             sum+=Number($(this).val());
+           });
+
+           $('#total').val(sum);
+
+
+          var discount_sum=0;
+
+           $('.dcount').each(function(){
+             discount_sum+=Number($(this).val());
+           });
+
+           $('#discount_total').val(discount_sum);
+
+
+          var quantity_sum=0;
+
+           $('.qcount').each(function(){
+             quantity_sum+=Number($(this).val());
+           });
+
+           $('#quantity_total').val(quantity_sum);
+
+        }
+
+
+     });
+
+
+    var rowIdx = 5; 
+    function addRow() {  
+        rowIdx++;
+
+       var template = '';
+         template += '<tr class="row-number">';
+         template += '<td class="text-center">'+ rowIdx + '';
+         template += '<td><input type="text" name="formset-'+ rowIdx +'-description2" class="form-control  multi border-0" >';
+         template += '<td><input type="number" name="formset-'+ rowIdx +'-quantity" id="quantity" class="form-control border-0 qcount multi"  >';
+         template += '<td><input type="number" name="formset-'+ rowIdx +'-unit_price" id="price" class="form-control border-0 multi" >';
+         template += '<td> <input type="number" name="formset-'+ rowIdx +'-discount" id="discount" class="form-control border-0 dcount multi" >';
+         template += '<td><input type="number" name="formset-'+ rowIdx +'-data_amount" id="amount" class="form-control border-0 underline-input amount" >';
+         template += '<td><select class="form-control form-select border-0" name="'+ rowIdx +'-currency" id="id_currency" ><option></option>{% for value, display_name in currency %}<option value="{{value}}">{{display_name}}</option>{% endfor %}</select></td>';
+         template += '<td class="text-center"><button class="btn btn-danger btn-circle btn-sm removeBtn"><i class="fas fa-trash"></i></button></td>';
+         template += '</tr>';
+
+         $("#calculation").append(template);
+         updateRowNumbers(); 
+
+
+        };
+
+
+       function updateRowNumbers(){
+
+        $('#calculation tr.row-number').each(function (index){
+         var formset_prefix = 'formset-'
+         var rowNumber = index + 1;
+
+         var regex = new RegExp(`${formset_prefix}\\d+-`, 'g');
+
+          $(this).find('input, select, textarea').each(function () {
+            var newName = $(this).attr('name').replace(regex, `${formset_prefix}${rowNumber-1}-`);
+            $(this).attr('name', newName);
+
+           });
+
+          // for updating the row number
+         $(this).find('td:eq(0)').text(rowNumber);
+          // console.log(">>>>>>", rowNumber)
+
+
+          rowId = $('#calculation tr.row-number').length + 1;
+          // console.log(">>>>>>", rowId)
+
+          // for updating the total form values
+          $('#id_formset-TOTAL_FORMS').val(rowId-1);
+
+        });
+
+       }
+
+    
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+      (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+          .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+              if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+              }
+
+              form.classList.add('was-validated')
+            }, false)
+          })
+      })()
+
+
+  </script>
+
+
+{% endblock content %}
+
+{% include 'backend/footer.html' %}

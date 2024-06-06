@@ -1,0 +1,366 @@
+{% load static %}
+
+{% include 'backend/header.html' %}
+
+{% block content %}
+
+<style type="text/css">
+
+      .table tbody tr td  {
+        padding: 10px;
+        color: #637381;
+        font-weight: 500;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+
+</style>
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        {% include 'backend/sidebar.html' %}
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content" style="background-color: white;">
+
+                <!-- Topbar -->
+                {% include 'backend/navbar.html' %}
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                     {% if messages %}
+                      <div class="alert alert-info alert-dismissible fade show" role="alert">
+                          {% for message in messages %}                     
+                              {{ message }}
+                          {% endfor %}
+                      </div>
+                      {% endif %}
+
+                    <form action="." method="POST" enctype="multiparts/form-data" novalidate >
+                     {% csrf_token %}
+
+                     <input type="hidden" name="formset-TOTAL_FORMS" value="5" id="id_formset-TOTAL_FORMS">
+                     <input type="hidden" name="formset-INITIAL_FORMS" value="0" id="id_formset-INITIAL_FORMS">
+                     <input type="hidden" name="formset-MIN_NUM_FORMS" value="0" id="id_formset-MIN_NUM_FORMS"> 
+                     <input type="hidden" name="formset-MAX_NUM_FORMS" value="1000" id="id_formset-MAX_NUM_FORMS">
+
+                      <!--Grid column-->
+                      <div class="col-md-12 mb-5">
+
+                          <div class="d-sm-flex align-items-center justify-content-between mb-3">
+                              <h4 class="h4 mb-0 text-gray-800">Cost of Production </h4>
+                              <div class="text-center text-md-left">
+                                  <button class="btn btn-primary" type="submit">Submit</button>
+                                  <a href="{% url 'cost_production' %}" class="btn btn-danger">Cancel</a>
+                              </div>
+                          </div>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-bordered" width="100%" cellspacing="0"> 
+                                    <thead style="background-color: #f8f9fc;" >
+                                        <tr>
+                                            <th width="100px" class="text-center">S/No.</th>
+                                            <th width="300px">Material</th>
+                                            <th width="200px">Qty</th>
+                                            <th width="200px">Unit</th>
+                                            <th width="200px">Price</th>
+                                            <th width="200px">Discount</th>
+                                            <th width="200px">Amount</th>
+                                            <th width="150px">Currency</th>
+                                            <th width="150px" class="text-center">Delete?</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                      <tr>
+                                        <td colspan="6" class="text-center margin-0"> Total Amount</td>
+                                        <td>
+                                          <input class="form-control border-0" type="number" id="total" name="total" />
+                                        </td>
+                                        <td></td>
+                                        <td class="text-center">
+                                          <a class="btn btn-light border btn-sm btn-circle add_count" onclick="addRow()">
+                                          <i class="fas fa-plus"></i>
+                                          </a>   
+                                        </td>
+                                      </tr>
+                                    </tfoot>
+                                    <tbody id="calculation">
+                                      {% for i in "12345" %}
+                                        <tr class="row-number">
+                                        <td class="text-center">{{forloop.counter}}</td>
+                                        <td>
+                                          <select class="browser-default custom-select border-0" name="formset-{{forloop.counter0}}-particulars" id="id_particulars" >
+                                            <option></option>
+                                            {% for i in get_particulars %}
+                                            <option value="{{i.id}}">{{i.name}}</option>
+                                            {% endfor %}
+                                          </select>
+                                        </td>
+                                        <td>
+                                          <input type="number" class="form-control multi border-0" name="formset-{{forloop.counter0}}-quantity" id="quantity" >
+                                        </td>
+                                        <td>
+                                          <select class="browser-default custom-select border-0" name="formset-{{forloop.counter0}}-unit">
+                                            <option value=""></option>
+                                            {% for i in get_units %}
+                                            <option value="{{i.id}}" name="unit">{{i.name}}</option>
+                                            {% endfor %}
+                                          </select>
+                                        </td>
+                                        <td>
+                                          <input type="number" class="form-control multi border-0" name="formset-{{forloop.counter0}}-unit_price" id="price" >
+                                        </td>
+                                        <td>
+                                          <input type="number" class="form-control multi border-0" name="formset-{{forloop.counter0}}-discount"  id="discount">
+                                        </td>
+                                        <td>
+                                          <input type="number" class="form-control amount border-0" name="formset-{{forloop.counter0}}-amount" id="amount" >
+                                        </td>
+                                        <td>
+                                          <select class="browser-default custom-select border-0" name="formset-{{forloop.counter0}}-currency" id="id_currency">
+                                            <option></option>
+                                            {% for value, display_name in currency %}
+                                                <option value="{{value}}">{{display_name}}</option>
+                                            {% endfor %}
+                                          </select>
+                                        </td>
+                                        <td class="text-center">
+                                          <div class="removeBtn" ><i class="fas fa-times-circle"></i></div>
+                                        </td>
+                                      </tr>
+                                      {% endfor %}
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                      </div>
+
+                    </form>
+
+                  </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+
+  <div class="modal fade" id="add_particular" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title " id="exampleModalLabel">Materials</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                  <form action="" method="POST" enctype="multiparts/form-data">
+                      {% csrf_token %}
+
+                      <input type="text" class="form-control" name="add_particular" placeholder="Add Materials..." required>
+
+                        <div class="mt-2 text-center">
+                            <button class="btn btn-danger" type="submit">Add</button>
+                            <button class="btn btn-primary" type="button" data-dismiss="modal">Cancel</button>
+                        </div>
+
+                  </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="modal fade" id="add_unit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title " id="exampleModalLabel">Unit</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                  <form action="" method="POST" enctype="multiparts/form-data">
+                    {% csrf_token %}
+
+                    <input type="text" class="form-control p-20" name="add_units" placeholder="Add Unit..." required>
+
+                    <div class="mt-3 text-center">
+                      <button class="btn btn-danger" type="submit">Add</button>
+                      <button class="btn btn-primary" type="button" data-dismiss="modal">Cancel</button>
+                    </div>
+
+                  </form>
+
+               </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+                    
+
+ <script src="{% static 'vendor/datatables/jquery-3.7.0.js' %}"></script>
+ <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+
+ {% include 'backend/footer.html' %}
+
+  <script type="text/javascript">
+
+    var rowIdx = 5;        
+
+    $(document).ready(function(){
+
+    $('#calculation').on("keyup",".multi",function(){
+      var parent = $(this).closest('tr');
+      var quant= $(parent).find('#quantity').val();
+      var price= $(parent).find('#price').val();
+      var discount= $(parent).find('#discount').val();
+
+      $(parent).find('#amount').val(quant* price - discount);
+      GrandTotal();
+
+     });
+
+      $(document).ready(function(){
+
+       //Remove row button click event
+       $(document).on("click", ".removeBtn", function () {
+
+        $(this).closest("tr").remove();
+
+         GrandTotal();
+         updateRowNumbers();
+           
+         });
+
+      });
+
+      function GrandTotal(){
+
+         var sum=0;
+
+           $('.amount').each(function(){
+             sum+=Number($(this).val());
+           });
+
+           $('#total').val(sum);
+
+        }
+
+     });
+
+
+
+    function addRow() {
+       rowIdx++;
+      formset_prefix = 'formset-'   
+
+       var template = '';
+         template += '<tr class="row-number">';
+         template += '<td class="text-center">'+ rowIdx +'</td>';
+         template += '<td><select class="browser-default custom-select border-0" name="'+ formset_prefix + rowIdx +'-particulars" id="id_particulars" ><option></option>{% for i in get_particulars %}<option value="{{i.id}}">{{i.name}}</option>{% endfor %}</select></td>';
+         template += '<td><input type="number" class="form-control multi border-0" name="'+ formset_prefix + rowIdx +'-quantity" id="quantity"></td>';
+         template += '<td><select class="browser-default custom-select border-0" name="'+ formset_prefix + rowIdx +'-unit" ><option></option>{% for i in get_units %}<option value="{{i.id}}">{{i.name}}</option>{% endfor %}</select></td>';
+         template += '<td><input type="number" class="form-control multi border-0" name="'+ formset_prefix + rowIdx +'-unit_price" id="price"></td>';
+         template += '<td><input type="number" class="form-control multi border-0" name="'+ formset_prefix + rowIdx +'-discount" id="discount" ></td>';
+         template += '<td><input type="number" class="form-control amount border-0" name="'+ formset_prefix + rowIdx +'-amount" id="amount"></td>';
+         template += '<td><select class="browser-default custom-select border-0" name="'+ formset_prefix + rowIdx +'-currency" id="id_currency" ><option></option>{% for value, display_name in currency %}<option value="{{value}}">{{display_name}}</option>{% endfor %}</select></td>';
+         template += '<td class="text-center"><div class="removeBtn" ><i class="fas fa-times-circle"></i></div></td>';
+         template += '</tr>';
+
+         $("#calculation").append(template);
+         updateRowNumbers();
+
+      };
+
+
+       function updateRowNumbers(){
+
+        $('#calculation tr.row-number').each(function (index){
+         var formset_prefix = 'formset-'
+         var rowNumber = index + 1;
+
+         var regex = new RegExp(`${formset_prefix}\\d+-`, 'g');
+
+          $(this).find('input, select').each(function () {
+            var newName = $(this).attr('name').replace(regex, `${formset_prefix}${rowNumber-1}-`);
+            $(this).attr('name', newName);
+
+           });
+
+          // for updating the row number
+         $(this).find('td:eq(0)').text(rowNumber);
+          // console.log(">>>>>>", rowNumber)
+
+
+          rowId = $('#calculation tr.row-number').length + 1;
+          // console.log(">>>>>>", rowId)
+
+          // for updating the total form values
+          $('#id_formset-TOTAL_FORMS').val(rowId-1);
+
+        });
+
+       }
+
+
+      // Example starter JavaScript for disabling form submissions if there are invalid fields
+      (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+          .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+              if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+              }
+
+              form.classList.add('was-validated')
+            }, false)
+          })
+      })()
+
+  </script>
+
+
+
+{% endblock content %}
+  
+
+

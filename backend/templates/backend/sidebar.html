@@ -1,0 +1,177 @@
+{% load static %}
+
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'home' %}">
+        <div class="sidebar-brand-icon rotate-n-15">
+            <i class="fas fa-laugh-wink"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+    </a>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item active">
+        <a class="nav-link" href="{% url 'home' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span></a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Interface
+    </div>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+            aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>G.E</span>
+        </a>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">General Expenses</h6>
+                <a class="collapse-item" href="{% url 'cost_production' %}">Cost of Production</a>
+                <a class="collapse-item" href="{% url 'fixed_cost' %}">Fixed Cost</a>
+                <a class="collapse-item" href="{% url 'maintenance' %}">Maintenance</a>
+                <a class="collapse-item" href="{% url 'other_expenses' %}">Other Expense</a>
+                <hr>
+                <h6 class="collapse-header">Transportation</h6>
+                <a class="collapse-item" href="{% url 'block_transportation' %}">Block</a>
+                <a class="collapse-item" href="{% url 'material_transportation' %}">Material</a>
+                <a class="collapse-item" href="{% url 'other_transportation' %}">Other</a>
+            </div>
+        </div>
+    </li>
+
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseThree"
+            aria-expanded="true" aria-controls="collapseThree">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Revenue</span>
+        </a>
+        <div id="collapseThree" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Sales</h6>
+                <a class="collapse-item" href="{% url 'sale' %}"> Sale (Cash & Credit) </a>
+                <a class="collapse-item" href="{% url 'partial_sale' %}">Partial Pay</a>
+                <hr>
+                <a class="collapse-item" href="{% url 'other_income' %}">Other income</a>
+                <a class="collapse-item" href="{% url 'debt_repayment' %}">Debts Repayment</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFour"
+            aria-expanded="true" aria-controls="collapseFour">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Production</span>
+        </a>
+        <div id="collapseFour" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Sales</h6>
+                <a class="collapse-item" href="{% url 'production' %}"> Production </a>
+                <a class="collapse-item" href="{% url 'piling_damages' %}">Damages</a>
+                <a class="collapse-item" href="{% url 'opening_stock' %}">Opening Stock</a>
+            </div>
+        </div>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFive"
+            aria-expanded="true" aria-controls="collapseFive">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Report</span>
+        </a>
+        <div id="collapseFive" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">General Report</h6>
+                <a class="collapse-item" href="{% url 'income_statement' %}"> Income Statement </a>
+                <a class="collapse-item" href="{% url 'profit_loss' %}">Profit and Loss</a>
+                <a class="collapse-item" href="{% url 'charts' %}">Chart Report</a>
+            </div>
+        </div>
+    </li>
+
+{% if request.user.is_superuser %}
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+       Particulars 
+    </div>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages3"
+            aria-expanded="true" aria-controls="collapsePages3">
+            <i class="fas fa-fw fa-folder"></i>
+            <span>Add On</span>
+        </a>
+        <div id="collapsePages3" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Setting:</h6>
+                <a class="collapse-item" href="{% url 'block_type' %}">Block Type</a>
+                <!-- <a class="collapse-item" href="">Currency</a> -->
+                <a class="collapse-item" href="{% url 'particulars' %}">Particulars</a>
+                <a class="collapse-item" href="{% url 'unit' %}">Unit</a>
+                <a class="collapse-item" href="{% url 'transportation_type' %}">Transportation Type</a>
+                <a class="collapse-item" href="{% url 'transaction_type' %}">Transaction Type</a>
+            </div>
+        </div>
+    </li>
+
+    
+{% endif %}
+
+{% if request.user.is_superuser %}
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Setting
+    </div>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+            aria-expanded="true" aria-controls="collapsePages">
+            <i class="fas fa-fw fa-folder"></i>
+            <span>User</span>
+        </a>
+        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Setting:</h6>
+                <a class="collapse-item" href="{% url 'user_lists' %}">Users List</a>
+                <a class="collapse-item" href="{% url 'user_register' %}">Register User</a>
+                <a class="collapse-item" href="{% url 'user_reset_password' %}">Reset Password</a>
+            </div>
+        </div>
+    </li>
+
+{% endif %}
+
+
+    <!-- Divider -->
+    <!-- <hr class="sidebar-divider d-none d-md-block"> -->
+
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+
+</ul>

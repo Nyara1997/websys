@@ -1,0 +1,75 @@
+{% load static %}
+
+{% include 'backend/header.html' %}
+
+{% block content %}
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        {% include 'backend/sidebar.html' %}
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content" style="background-color: white;">
+
+                <!-- Topbar -->
+                {% include 'backend/navbar.html' %}
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                      <!--Grid column-->
+                      <div class="col-md-12 mb-5 mt-5">
+
+                          <form id="contact-form" action="" method="POST" enctype="multiparts/form-data">
+
+                            {% csrf_token %}
+
+                              <!--Grid row-->
+                              <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                                  <div class="h4 mb-0 text-gray-800">Are you sure you want to delete "{{get_maintenance.maintenance_type.name}}"?</div>
+                              </div>
+                              <!--Grid row-->
+                              <div class="mb-2">
+                                  <div class="h5 mb-5 text-gray-800">Amount Paid : {{get_maintenance.amount}}</div>
+                              </div>
+                              <!--Grid row-->
+
+                                <div class="text-center text-md-left">
+                                  <button class="btn btn-primary" type="submit">Yes, I'm Sure</button>
+                                  <a href="{% url 'maintenance' %}" class="btn btn-danger">No, take me back</a>
+                              </div>
+
+
+                            </form>
+                                
+                          
+                      </div>
+                      <!--Grid column-->
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+
+
+{% endblock content %}
+
+{% include 'backend/footer.html' %}
+  
+
+
+
+

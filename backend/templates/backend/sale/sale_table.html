@@ -1,0 +1,201 @@
+{% load static %}
+
+{% include 'backend/header.html' %}
+
+{% block content %}
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        {% include 'backend/sidebar.html' %}
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content" style="background-color: white;">
+
+                <!-- Topbar -->
+                {% include 'backend/navbar.html' %}
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                     {% if messages %}
+                      <div class="alert alert-info alert-dismissible fade show" role="alert">
+                          {% for message in messages %}                     
+                              {{ message }}
+                          {% endfor %}
+                      </div>
+                      {% endif %}
+
+                    {% if request.user.is_superuser %}
+                    <!-- Content Row -->
+                    <div class="row">
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-2">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                 Cash (Weekly)</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">USD {{cash_weekly_USD}} </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-2">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                 Cash (Weekly)</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">SSP {{cash_weekly_SSP}} </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-pound-sign fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-12 mb-2">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Credit (Weekly)</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">USD {{credit_weekly_USD}}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                       <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-12 mb-2">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                               Credit (Weekly)</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">SSP {{credit_weekly_SSP}}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-pound-sign fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <hr>
+                    {% endif %}
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-4">
+                        <h1 class="h3 mb-0 text-gray-800">Cash and Credit Sales</h1>
+                        <a href="{% url 'add_sale' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                        <i class="fas fa-plus fa-sm text-white-50"></i> Create </a>
+                    </div>
+
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <!-- <th>S/No</th>  -->
+                                            <th class="text-center">Client </th>
+                                            <th class="text-center">Transaction</th>
+                                            <th class="text-center">Block</th>
+                                            <th class="text-center">Qty</th>
+                                            <th class="text-center">Discount</th>
+                                            <th class="text-center">Amount</th>
+                                            <th class="text-center">Currency</th>
+                                            <th class="text-center">User</th>
+                                            <th class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                      {% for i in all_sales %}
+                                      <tr>
+                                          <!-- <td>{{forloop.counter}}</td>  -->
+                                          <td>{{i.client_name}}</td>
+                                          <td>{{i.transaction.name}}</td>
+                                          <td>{{i.block.name}}</td>
+                                          <td>{{i.quantity_Sold}}</td>
+                                          <td>{{i.discount}}</td>
+                                          <td>{{i.amount}}</td>
+                                          <td>{{i.currency}}</td>
+                                          <td>{{i.user}}</td>
+
+                                          {% if request.user.is_superuser %}
+                                          <td>      
+                                          <a href="{% url 'edit_sale' i.id %}" class="btn btn-light btn-circle btn-sm">
+                                            <i class="fas fa-pen"></i>
+                                          </a>
+                                          <a href="{% url 'delete_sale' i.id %}" class="btn btn-danger btn-circle btn-sm" >
+                                            <i class="fas fa-trash"></i>
+                                          </a>
+                                          <a href="{% url 'pdf_view' i.id %}" class="btn btn-primary btn-circle btn-sm" >
+                                            <i class="fas fa-print"></i>
+                                          </a>
+                                          </td>
+                                          {% endif %}
+
+                                      </tr>
+
+
+                                      {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+
+{% endblock content %}
+
+{% include 'backend/footer.html' %}
+  
+
+

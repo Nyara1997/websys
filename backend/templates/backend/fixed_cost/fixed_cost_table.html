@@ -1,0 +1,272 @@
+{% load static %}
+
+{% include 'backend/header.html' %}
+
+{% block content %}
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        {% include 'backend/sidebar.html' %}
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content" style="background-color: white;">
+
+                <!-- Topbar -->
+                {% include 'backend/navbar.html' %}
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                     {% if messages %}
+                      <div class="alert alert-info alert-dismissible fade show" role="alert">
+                          {% for message in messages %}                     
+                              {{ message }}
+                          {% endfor %}
+                      </div>
+                      {% endif %}
+
+                    {% if request.user.is_superuser %}
+                    <!-- Content Row -->
+                    <div class="row">
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-4 col-md-6 mb-2">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Fixed Cost (Weekly)</div>
+                                                <a href="{% url 'fixed_cost_report_usd' %}">
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">USD {{fixed_cost_weekly_expenese_USD}}</div>
+                                            </a>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-4 col-md-6 mb-2">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                Fixed Cost (Weekly)</div>
+                                            <a href="{% url 'fixed_cost_report_ssp' %}">
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">SSP {{fixed_cost_weekly_expenese_SSP}}</div>
+                                            </a>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-pound-sign fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-4 col-md-12 mb-2">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                Fixed Cost (Count)</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{get_count}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    {% endif %}
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-3">
+                        <h1 class="h4 mb-0 text-gray-800">Fixed Cost</h1>
+                        <div>
+                            <a href="{% url 'add_fixed_cost' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                            <i class="fas fa-plus fa-sm text-white-50"></i> Create </a>
+                            <a href="{% url 'fixed_cost_report' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                            <i class="fas fa-book fa-sm text-white-50"></i> Report </a> 
+                        </div>
+                    </div>
+
+
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>S/No</th>
+                                            <th>Reference No.</th>
+                                            <th>Fixed Cost</th>
+                                            <th>Qty</th>
+                                            <th>Unit</th>
+                                            <th>Price</th>
+                                            <th>Amount</th>
+                                            <th>Currency</th>
+                                            <th>Status</th>
+                                            <th>User</th>
+
+                                            {% if request.user.is_superuser %}
+                                            <th>Action</th>
+                                            {% endif %}
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                      {% for i in fixed_cost %}
+                                      <tr>
+                                          <td>{{forloop.counter}}</td>
+                                          <td>{{i.reference_number}}</td>
+                                          <td>{{i.fixed_cost}}</td>
+                                          <td>{{i.quantity}}</td>
+                                          <td>{{i.unit}}</td>
+                                          <td>{{i.unit_price}}</td>
+                                          <td>{{i.amount}}</td>
+                                          <td>{{i.currency}}</td>
+                                          
+                                          {% if request.user.is_superuser %}
+
+                                            {% if i.status == "Pending" %}
+                                              <td><a class="btn btn-primary btn-sm text-center" href="{% url 'fixed_cost_status' i.id %}">
+                                                  <i class="fas fa-info-circle"></i> Pending
+                                              </a></td>
+                                            {% endif %}
+
+                                  
+                                            {% if i.status == "Processing" %}
+                                            <td><a class="btn btn-info btn-sm text-center" href="{% url 'fixed_cost_status' i.id %}"><i class="fas fas fa-flag"></i> Processing </a></td>
+                                            {% endif %}
+
+                                            {% if i.status == "Complete" %}
+                                            <td>
+                                              <a class="btn btn-success btn-sm text-center" href="{% url 'fixed_cost_status' i.id %}"><i class="fas fas fa-check"></i> Complete </a>
+                                            </td>
+                                            {% endif %}
+
+                                        {% else %}
+                                      
+
+                                            {% if i.status == "Pending" %}
+                                              <td><button class="btn btn-primary btn-sm text-center">
+                                                  <i class="fas fa-info-circle"></i> Pending
+                                              </button></td>
+                                            {% endif %}
+
+
+                                            {% if i.status == "Processing" %}
+                                            <td><button class="btn btn-info btn-sm text-center"><i class="fas fas fa-flag"></i> Processing </button></td>
+                                            {% endif %}
+
+                                            {% if i.status == "Complete" %}
+                                            <td>
+                                              <button class="btn btn-success btn-sm text-center"><i class="fas fas fa-check"></i> Complete 
+                                              </button>
+                                              </td>
+                                            {% endif %}
+
+
+                                        {% endif %}
+
+                                          <td>{{i.user}}</td>
+
+                                          {% if request.user.is_superuser %}
+                                          <td>      
+                                          <a href="{% url 'edit_fixed_cost' i.id %}" class="btn btn-light btn-circle btn-sm">
+                                            <i class="fas fa-pen"></i>
+                                          </a>
+
+                                            <a href="#" class="btn btn-danger btn-circle btn-sm" data-toggle="modal" data-target="#deleteModal{{i.id}}">
+                                            <i class="fas fa-trash"></i>
+                                          </a>
+
+                                         <div class="modal fade"  id="deleteModal{{i.id}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+
+                                                            <p class="text-center">Are you sure you want to delete this Item?</p>
+
+                                                            <form action="{% url 'delete_fixed_cost' i.id %}" method="POST">
+                                                                {% csrf_token %}
+
+                                                                <div class="text-center">
+                                                                    
+                                                                    <button class="btn btn-danger" type="submit">Yes, delete it!</button>
+                                                                    <button class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                  
+                                                                </div>
+                                                                
+                                                            </form>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                          </td>
+
+                                          {% endif %}
+
+                                      </tr>
+
+                                      {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+
+{% endblock content %}
+
+{% include 'backend/footer.html' %}
+  
+
+
+
+
+
+
+

@@ -1,0 +1,119 @@
+{% load static %}
+
+
+{% block content %}
+
+<style>
+    @page {
+        size: a4 portrait;
+        @frame header_frame {           /* Static Frame */
+            -pdf-frame-content: header_content;
+            left: 50pt; width: 512pt; top: 50pt; height: 40pt;
+        }
+        @frame content_frame {          /* Content Frame */
+            left: 50pt; width: 512pt; top: 90pt; height: 632pt;
+        }
+        @frame footer_frame {           /* Another static Frame */
+            -pdf-frame-content: footer_content;
+            left: 50pt; width: 512pt; top: 772pt; height: 20pt;
+        }
+    }
+</style>
+
+    <!-- Content for Static Frame 'header_frame' -->
+    <div id="header_content">
+        <h3>SB ADMIN</h3>
+    </div>
+
+    <div class="container">
+
+    <table>
+        <thead>
+            <th style="text-align: left;">Customer Info</th>
+            <th style="text-align: left;">Company Info</th>
+            <th style="text-align: left;">Invoice Info</th>
+            <th></th>
+        </thead>
+        <tbody>
+            <td>
+                {{data.client_name}} <br>
+                [email protected]<br>
+                123456780<br>
+                Juba, South Sudan
+            </td>
+            <td>
+                Jolobong<br>
+                sale@jolobong.com<br>
+                +211 922 212 007<br>
+                Gurei West
+            </td>
+            <td>
+                Reference <br>
+                Transaction<br>
+                Status <br>
+            </td>
+            <td>
+                {{data.user}}<br>
+                {{data.transaction.name}}<br>
+                Completed
+            </td>
+        </tbody>
+    </table>
+
+    <table style="margin-top: 50px;">
+        <thead>
+            <th style="text-align: left;">S/No</th>
+            <th style="text-align: left;">Particular</th>
+            <th style="text-align: left;">Qty</th>
+            <th style="text-align: left;">Price</th>
+            <th style="text-align: left;">Discount</th>
+            <th style="text-align: left;">Currency</th>
+            <th style="text-align: left;">Tax</th>
+            <th style="text-align: left;">Sub Total</th>
+            <th style="text-align: left;">Date Issued</th>
+        </thead>
+        <tbody>
+            <td>
+                1
+            </td>
+            <td>
+                {{data.block.name}} 
+            </td>
+            <td>
+                {{data.quantity_Sold}} 
+            </td>
+            <td>
+                {{data.unit_price}}
+            </td>
+            <td>
+                {{data.discount}}
+            </td>
+            <td>
+                {{data.currency.name}}
+            </td>
+            <td>
+                0.00
+            </td>
+            <td>
+                {{data.amount}}
+            </td>
+            <td>
+                {{data.pub_date}}
+            </td>
+
+            
+
+        </tbody>
+    </table>
+    <hr>
+    <h4>Total : {{data.amount}}</h4>
+        
+    </div>
+
+    <!-- Content for Static Frame 'footer_frame' -->
+    <div id="footer_content">(c) - page <pdf:pagenumber>
+        of <pdf:pagecount>
+    </div>
+
+{% endblock content %}
+

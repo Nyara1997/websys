@@ -1,0 +1,158 @@
+{% load static %}
+
+{% include 'backend/header.html' %}
+
+{% block content %}
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        {% include 'backend/sidebar.html' %}
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content" style="background-color: white;">
+
+                <!-- Topbar -->
+                {% include 'backend/navbar.html' %}
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+
+                <!-- /.container-fluid -->
+                <div class="container-fluid">
+                  
+                    <form action="" method="POST" enctype="multiparts/form-data" class="needs-validation" novalidate >
+
+                     {% csrf_token %}
+                     <!--Grid column-->
+                      <div class="col-md-12 mb-5 ">
+
+                          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                              <h4 class="h4 mb-0 text-gray-800">Other Expenses Form</h4>
+                              <div class="text-center text-md-left">
+                                  <button class="btn btn-primary" type="submit">Submit Form</button>
+                                  <a href="{% url 'cost_production' %}" class="btn btn-danger">Cancel</a>
+                              </div>
+                          </div>
+                            
+                            <div class="table-responsive">
+                         
+                                <table class="table table-bordered"  width="100%" cellspacing="0"> 
+                                    <thead style="background-color: #f8f9fc;" >
+                                        <tr>
+                                            <th width="100px" class="text-center">S/No.</th>
+                                            <th width="350px">Description</th>
+                                            <th width="150px">Qty</th>
+                                            <th width="150px">Unit</th>
+                                            <th width="150px">Unit Price</th>
+                                            <th width="150px">Amount</th>
+                                            <th width="150px">Currency</th>
+                                            <th width="150px">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                      <tr>
+                                        <td colspan="6" class="text-center margin-0"> Total Amount</td>
+                                        <td>
+                                          <input class="form-control border-0" type="number" id="total" name="amount" />
+                                        </td>
+                                        <td class="text-center">
+                                          <a class="btn btn-light border btn-sm btn-circle add_count" onclick="addRow()">
+                                          <i class="fas fa-plus"></i>
+                                          </a>   
+                                        </td>
+                                      </tr>
+                                    </tfoot>
+                                    <tbody id="calculation">
+
+                                      {% for i in "123" %}
+                                        <tr class="filled">
+                                        <td class="text-center">{{forloop.counter}}</td>
+                                        <td>
+                                            <textarea class="form-control border-0 rounded-0" id="exampleFormControlTextarea1" rows="1" name="description"required></textarea>
+                                        </td>
+                                        <td>
+                                          <input type="number" class="form-control border-0" name="quantity" id="quantity"  required>
+                                        </td>
+                                        <td>
+                                          <select class="browser-default custom-select border-0" name="unit" required>
+                                            <option value=""></option>
+                                            {% for i in units %}
+                                            <option value="{{i.id}}" name="unit">{{i.name}}</option> 
+                                            {% endfor %}
+                                          </select>
+                                        </td>
+                                        <td>
+                                          <input type="number" class="form-control border-0" name="unit_price" id="price"  required>
+                                        </td>
+                                        <td>
+                                          <input type="text" class="form-control border-0" name="amount" id="amount"  required>
+                                        </td>
+                                        <td>
+                                          <select class="form-control form-select border-0" name="currency" id="id_currency" required>
+                                            <option value="" ></option>
+                                            {% for value,name in currency %}
+                                                <option value="{{value}}">{{name}}</option>
+                                            {% endfor %}
+                                          </select>
+                                        </td>
+                                        <td class="text-center">
+                                          <button class="btn btn-danger btn-circle btn-sm removeBtn" ><i class="fas fa-trash"></i></button>
+                                        </td>
+                                      </tr>
+                                      {% endfor %}
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                      </div>
+
+                    </form>
+                </div>
+
+            </div>
+            <!-- End of Main Content -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+  <script type="text/javascript">
+    
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+      (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+          .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+              if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+              }
+
+              form.classList.add('was-validated')
+            }, false)
+          })
+      })()
+
+
+  </script>
+
+
+{% endblock content %}
+
+{% include 'backend/footer.html' %}

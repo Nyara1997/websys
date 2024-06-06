@@ -1,0 +1,177 @@
+{% load static %}
+
+{% include 'backend/header.html' %}
+
+{% block content %}
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        {% include 'backend/sidebar.html' %}
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content" style="background-color: white;">
+
+                <!-- Topbar -->
+                {% include 'backend/navbar.html' %}
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                      <!--Grid column-->
+                      <div class="col-md-12 mb-5">
+
+                          <!-- Page Heading -->
+                          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                              <h4 class="h4 mb-0 text-gray-800">Edit Other Income </h4>
+                          </div>
+
+                        <div class="card">
+
+                          <div class="card-body">
+
+				            <form  name="contact-form" action="" method="POST" enctype="multiparts/form-data" class="needs-validation" novalidate>
+
+				               {% csrf_token %}
+
+				            	<div class="row" style="margin-top: 25px; margin-bottom: 15px; ">
+
+				                 	<div class="col-md-12">
+
+				                 		<div class="form-group">
+										  <label for="exampleFormControlTextarea1">Description</label>
+										  <textarea class="form-control rounded-0" rows="5" name="description" >
+										  	{{other_income_id.description}}
+										  </textarea>
+										</div>
+				                 		
+				                 	</div>    			                 
+				                </div>
+
+				                <!--Grid row-->
+				                <div class="row">
+
+				               		<!--column2-->
+				                    <div class="col-md-6">
+				                        
+										<label for="exampleForm2">quantity</label>
+										<input type="number" id="exampleForm2" class="form-control" 
+										name="quantity" value="{{other_income_id.quantity}}">
+				                 
+				                    </div>
+				                    <!--end column-->
+
+				                    <!--column1-->
+				                    <div class="col-md-6">
+				                        
+										<label for="exampleForm2">Price</label>
+										<input type="number" id="exampleForm2" class="form-control" name="price" value="{{other_income_id.price}}">
+				                 
+				                    </div>
+				                    <!--end column-->
+
+
+				                </div>
+				                <!--Grid row-->
+
+
+				                <div class="row" style="margin-top: 15px; margin-bottom: 25px; ">
+
+				                	<!--column1-->
+				                    <div class="col-md-6">
+				                        
+										<label for="exampleForm2">Discount</label>
+										<input type="number" id="exampleForm2" class="form-control" name="discount" value="{{other_income_id.discount}}">
+				                 
+				                    </div>
+				                    <!--end column-->
+
+				                	<!--column4-->
+				                    <div class="col-md-6">
+				                        <!-- Default input -->
+										<label for="exampleForm2">currency</label>
+										<select class="browser-default custom-select" name="currency">
+										  {% for i in currency %}
+
+										  {% if other_income_id.currency.id == i.id %}
+										  <option selected value="{{other_income_id.currency.id}}">
+										  	{{other_income_id.currency.name}}
+										  </option>
+										  {% else %}
+										  <option value="{{i.id}}">{{i.name}}</option>
+										  {% endif %}
+
+										  {% endfor %}
+										</select>
+				                       
+				                    </div>
+				                    <!--end column-->
+
+				                    			                 
+				                </div>
+
+
+				              <div class="text-center text-md-left">
+				                <button class="btn btn-primary" type="submit">Submit</button>
+				                <a href="{% url 'other_income' %}" class="btn btn-danger">Cancel</a>
+				            </div>
+
+
+				               
+				            </form>
+                            
+                          </div>
+                          
+                        </div>
+
+                      </div>
+                      <!--Grid column-->
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+  <script type="text/javascript">
+    
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+      (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+          .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+              if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+              }
+
+              form.classList.add('was-validated')
+            }, false)
+          })
+      })()
+
+
+  </script>
+
+
+{% endblock content %}
+
+{% include 'backend/footer.html' %}

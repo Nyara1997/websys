@@ -1,0 +1,387 @@
+{% load static %}
+
+{% include 'backend/header.html' %}
+
+{% block content %}
+
+    <!-- Page Wrapper -->
+  <div id="wrapper">
+
+      <style type="text/css">
+        .table td, .table th {
+            padding: 0.75rem;
+            vertical-align: middle;
+            border-top: 1px solid #e3e6f0;
+        }
+      </style>
+
+        <!-- Sidebar -->
+        {% include 'backend/sidebar.html' %}
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content" style="background-color: white;">
+
+                <!-- Topbar -->
+                {% include 'backend/navbar.html' %}
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid" style="margin-bottom: 250px;">
+
+                  <div class="col-md-12 mb-5">
+
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h4 class="h4 mb-0 text-gray-800">Add Block Transportation </h4>
+                    </div>
+
+	                    <form action="" method="POST" enctype="multiparts/form-data" class="needs-validation" novalidate>
+
+				              {% csrf_token %}
+
+                      <div class="row">
+
+                        <div class="col-xl-12">
+
+                          <div class="card">
+
+                           <div class="card-body">
+
+                              <div class="row">
+
+                                <div class="col-md-4" >
+                                  <input type="text" id="exampleForm2" class="form-control" name="client_name"  placeholder="Client Name" required>
+                                </div>
+
+                                 <div class="col-md-3">
+                                   <input type="text" class="form-control" name="phone" placeholder="Phone Number">
+                                 </div>
+
+                                 <div class="col-md-5">
+                                   <input type="text" class="form-control" name="address" placeholder="Delivery Address">
+                                 </div>
+
+                              </div>
+
+                              <div class="row mt-3">
+
+                                <div class="col-md-4" hidden>
+                                  <select class="browser-default custom-select" name="transportation_type" required> 
+                                    {% for i in transportation_type %}
+                                    <option value="{{i.id}}">{{i.name}}</option>                     
+                                    {% endfor %}
+                                  </select>
+                                </div>
+
+                                 <div class="col-md-4">
+                                   <input type="text" class="form-control" name="amount" placeholder="Total Amount">
+                                 </div>
+
+                                  <div class="col-md-3">
+                                    <select class="browser-default custom-select" name="currency" required>
+                                      <option value="">Select Currency </option>
+                                      {% for i in currency_type %}
+                                      <option value="{{i.id}}">{{i.name}}</option>
+                                      {% endfor %}
+                                    </select>
+                                 </div>
+                                
+                              </div>
+
+                              </div>
+
+                            </div>
+
+                        </div>
+                        
+                      </div>
+
+
+                        <div class="row mt-4 mb-2">
+
+                          <div class="col-md-12">
+
+                            <div class="table-responsive">
+
+                              <table class="table table-bordered">
+
+                                  <thead style="background-color: #f8f9fc; ">
+                                    <tr>
+                                      <th style="width: 100px; text-align: center;">S/No.</th>
+                                      <th style="width: 180px; text-align: left;">Block</th>
+                                      <th style="width: 150px; text-align: left;">Price</th>
+                                      <th style="width: 130px; text-align: left;">Qty</th>
+                                      <th style="width: 150px; text-align: left;">Discount</th>
+                                      <th style="width: 150px; text-align: left;">Amount</th>
+                                      <th style="width: 50px; text-align: left;">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tfoot>
+                                      <tr>
+                                        <td colspan="3" class="text-center margin-0"> Total</td>
+                                        <td>
+                                          <input class="form-control border-0" type="number" id="quantity_total" name="quantity_total"  />
+                                        </td>
+                                        <td>
+                                          <input class="form-control border-0" type="number" id="discount_total" name="discount_total" />
+                                        </td>
+                                        <td>
+                                          <input class="form-control border-0" type="number" id="total" name="total"  />
+                                        </td>
+                                        <td class="text-center">
+                                          <a class="btn btn-light border btn-sm btn-circle add_count" onclick="addRow()">
+                                          <i class="fas fa-plus"></i>
+                                          </a>   
+                                        </td>
+                                      </tr>
+                                    </tfoot>
+                                    <tbody id="calculation">
+
+                                      {% for i in "123" %}
+                                      <tr>
+                                       <td class="text-center">{{forloop.counter}}</td>
+                                        <td>
+                                          <select class="browser-default custom-select border-0" name="block" required>
+                                            <option value="" >Select Item</option>
+                                              {% for i in block_type %}
+                                              <option value="{{i.price}}">{{i.name}}</option>
+                                            {% endfor %}
+                                          </select>
+                                        </td>
+                                        <td>
+                                          <input type="number" name="unit_price" id="price" class="form-control border-0  multi " required>
+                                        </td>
+                                        <td>
+                                          <input type="number" name="quantity_sold" id="quantity" class="form-control border-0 qcount multi" required>
+                                        </td>
+                                        <td>
+                                          <input type="number" name="discount" id="discount" class="form-control dcount border-0 multi" required>
+                                        </td>
+                                        <td>
+                                          <input type="number" name="amount" id="amount" class="form-control border-0 amount" required>
+                                        </td>
+                                        <td class="text-center">
+                                          <button class="btn btn-danger btn-circle btn-sm removeBtn" ><i class="fas fa-trash"></i></button>
+                                        </td>
+                                      </tr>
+                                      {% endfor %}
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                          </div>
+
+                        </div>
+
+
+                        <div class="row">
+
+                            <div class="col-xl-5">
+
+                              <table class="table table-bordered">
+
+                                <thead>
+                                  <th>Description</th>
+                                  <th>Total</th>
+                                </thead>
+
+                                <tbody>
+
+                                 <tr>
+                                  <td>Quantity</td>
+                                  <td><input class="form-control border-0" type="number" id="quantity_total" name="quantity_total"  /></td>
+                                 </tr>
+                                 <tr>
+                                  <td>Discount</td>
+                                  <td><input class="form-control border-0" type="number" id="discount_total" name="discount_total"  /></td>
+                                 </tr>
+                                 <tr>
+                                  <td>Grand Total</td>
+                                  <td><input class="form-control border-0" type="number" id="total" name="total"  /></td>
+                                 </tr>
+
+                                </tbody>
+
+                              </table>         
+                              
+                            </div>
+
+                            <div class="text-center text-md-right">
+                                <button class="btn btn-primary" type="submit">Submit Form</button>
+                                <a href="{% url 'sale' %}" class="btn btn-danger">Cancel</a>
+                            </div>
+                          
+                        </div>
+
+
+	                    </form>
+
+         
+                     </div>
+                      <!--Grid column-->
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+
+    <div class="modal fade" id="add_cost_type" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title " id="exampleModalLabel">Add Cost Type</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+
+                <form action="" method="POST" enctype="multiparts/form-data">
+                    {% csrf_token %}
+
+                    <div class="container mt-3 mb-3">
+                      <div class="row">
+                        <label for="exampleForm2">Cost Type</label>
+                        <input type="text" class="form-control" name="cost_type" id="id_unit" required>
+                      </div>
+                      
+                    </div>
+                    <div class="modal-footer">
+                          <button class="btn btn-danger" type="submit">Add</button>
+                          <button class="btn btn-primary" type="button" data-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+  {% include 'backend/footer.html' %}
+
+<script type="text/javascript">
+
+  $(document).ready(function(){
+
+    $('#calculation').on("keyup",".multi",function(){
+      var parent = $(this).closest('tr');
+      var quant= $(parent).find('#quantity').val();
+      var price= $(parent).find('#price').val();
+      var discount= $(parent).find('#discount').val();
+
+    $(parent).find('#amount').val(quant* price - discount);
+        GrandTotal();
+
+      });
+
+
+
+   $(document).ready(function(){
+
+     //Remove row button click event
+     $(document).on("click", ".removeBtn", function () {
+        $(this).closest("tr").remove();
+
+       GrandTotal()
+        
+     });
+
+
+  });
+
+
+    function GrandTotal(){
+       var sum=0;
+
+       $('.amount').each(function(){
+         sum+=Number($(this).val());
+       });
+
+       $('#total').val(sum);
+
+
+      var discount_sum=0;
+
+       $('.dcount').each(function(){
+         discount_sum+=Number($(this).val());
+       });
+
+       $('#discount_total').val(discount_sum);
+
+
+      var quantity_sum=0;
+
+       $('.qcount').each(function(){
+         quantity_sum+=Number($(this).val());
+       });
+
+       $('#quantity_total').val(quantity_sum);
+
+    }
+
+
+
+
+     });
+
+
+    var rowIdx = 3;
+
+    function addRow() {   
+
+        rowIdx++;
+
+       var template = '';
+         template += '<tr>';
+         template += '<td class="text-center">'+ rowIdx +'';
+         template += '<td><select class="browser-default custom-select border-0" name="block" " required><option value="" >Select Item</option>{% for i in get_block %}<option value="{{i.price}}">{{i.name}}</option>{% endfor %}</select>';
+         template += '<td><input type="number" name="unit_price" id="price" class="form-control border-0 multi" required>';
+         template += '<td><input type="number" name="quantity_sold" id="quantity" class="form-control border-0 qcount multi" required>';
+         template += '<td> <input type="number" name="discount" id="discount" class="form-control border-0 dcount multi" required>';
+         template += '<td><input type="number" name="amount" id="amount" class="form-control border-0 underline-input amount" required>';
+         template += '<td class="text-center"><button class="btn btn-danger btn-circle btn-sm removeBtn"><i class="fas fa-trash"></i></button></td>';
+         template += '</tr>';
+
+         $("#calculation").append(template); 
+
+
+        };
+
+    
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+      (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+          .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+              if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+              }
+
+              form.classList.add('was-validated')
+            }, false)
+          })
+      })()
+
+
+  </script>
+
+
+{% endblock content %}

@@ -1,0 +1,151 @@
+{% load static %}
+
+{% include 'backend/header.html' %}
+
+{% block content %}
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        {% include 'backend/sidebar.html' %}
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content" style="background-color: white;">
+
+                <!-- Topbar -->
+                {% include 'backend/navbar.html' %}
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-2 mt-2">
+                        <h1 class="h4 mb-0 text-gray-800">Profit and Loss Report</h1>
+                        <div>
+                            <a href="" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                            <i class="fas fa-arrow-right fa-sm text-white-50"></i> Return </a> 
+                        </div>
+                    </div>
+
+
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+
+                        <div class="card-header">
+                             <div class="d-sm-flex align-items-center justify-content-between mt-2 ">
+                                <div>
+                                    <label class="text-gray-1500">Filter by Date :</label>
+                                </div>
+                                <div class="d-sm-flex align-items-center justify-content-between mt-2">
+                                    <input class="form-control mr-2" type="date" id="start-date">
+
+                                    <input class="form-control" type="date" id="end-date">
+                                    
+                                    <a class="btn btn-primary mr-1 ml-2" onclick="searchRecords()">
+                                        <i class="fas fa-search text-white"></i> 
+                                    </a>
+                                    <a class="btn btn-primary" onclick="resetFilters()">
+                                        <i class="fas fa-undo text-white"></i>
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th></th>
+                                            <th>USD</th>
+                                            <th>SSP</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                      <tr>
+                                          <td>Revenue</td>
+                                          <td>Gross sales</td>
+                                          <td></td>
+                                          <td></td>
+                                      </tr>
+                                      <tr>
+                                          <td></td>
+                                          <td>Less: Returns/damages</td>
+                                          <td></td>
+                                          <td></td>
+                                      </tr>
+                                      <tr>
+                                          <td></td>
+                                          <td>Other Revenue</td>
+                                          <td></td>
+                                          <td></td>
+                                      </tr>
+                                      <tr>
+                                          <td></td>
+                                          <td>Net Revenue</td>
+                                          <td></td>
+                                          <td></td>
+                                      </tr>
+                                      <tr>
+                                          <td>Cost of production</td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                      </tr>
+                                      <tr>
+                                          <td>Bad debts</td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                      </tr>
+                                      <tr>
+                                          <td>General Expenses</td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                      </tr>
+                                      <tr>
+                                          <td colspan="2" class="text-center">Net Profit(Loss)</td>
+                                          <td></td>
+                                          <td></td>
+                                      </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+
+{% endblock content %}
+
+{% include 'backend/footer.html' %}
+  
+
+
+
+
+
+
+

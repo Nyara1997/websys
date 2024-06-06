@@ -1,0 +1,501 @@
+{% load static %}
+
+{% include 'backend/header.html' %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/fixedHeader.dataTables.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/select.dataTables.min.css' %}">
+
+<style type="text/css">
+    thead input {
+        width: 100%;
+    }
+
+    .table tbody tr td  {
+        padding: 10px;
+        color: #637381;
+        font-weight: 500;
+        border-bottom: 1px solid #e9ecef;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+</style>
+{% block content %}
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        {% include 'backend/sidebar.html' %}
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content" style="background-color: white;">
+
+                <!-- Topbar -->
+                {% include 'backend/navbar.html' %}
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+
+                    <!-- Page Heading -->
+                     <div class="d-sm-flex align-items-center justify-content-between mb-3 mt-4">
+                        <h3 class="mb-0">Cost of Production General Report </h3>
+                        <div>
+                            <a href="{% url 'add_cost_production' %}" class="btn  btn-primary">
+                                <i class="fas fa-plus"></i>
+                            </a>
+                            <a href="{% url 'cost_production' %}" class="btn btn-primary"> 
+                                <i class="fas fa-arrow-right "></i>
+                            </a>
+
+                        </div>
+                    </div> 
+
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-2">
+
+                        <div class="card-body">
+
+                             <div class="d-sm-flex align-items-center justify-content-between mt-2 ">
+                                <div>
+                                    <label class="text-gray-1500">Filter by Date : </label>
+                                </div>
+                                <div class="d-sm-flex align-items-center justify-content-between mt-2">
+                                    <input class="form-control mr-2" placeholder="From Date" type="text" id="min" name="min" readonly>
+
+                                    <input class="form-control" placeholder="To Date" type="text" id="max" name="max" readonly>
+                                    
+                                    <button class="btn btn-primary mr-1 ml-2" id="filter_data">
+                                        <i class="fas fa-search text-white"></i>
+                                    </button>
+                                    <button class="btn btn-primary " id="reset_filter_data">
+                                        <i class="fas fa-undo text-white"></i>
+                                    </button>
+                                </div>
+
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+
+                   <div class="card shadow mb-4">
+
+                      <div class="card-body">
+                            <div class="table-responsive">
+                            <div id="demo-output" style="margin-bottom: 1em;" class="chart-display"></div>
+                            <table id="example" class="table table-bordered table-stripped" style="width:100%">
+                                  <thead class="mt-4">
+                                    <tr>
+                                      <th>S/No.</th>
+                                      <th>Materials</th>
+                                      <th>Qty</th>
+                                      <th>Unit</th>
+                                      <th>Price</th>
+                                      <th>Discount</th>
+                                      <th>Amount (SSP)</th>
+                                      <th>Amount (USD)</th>
+                                      <th>Status</th> 
+                                      <th>User</th>
+                                      <th hidden>Date</th>
+                                    </tr>
+                                  </thead>
+                                    <tfoot>
+                                      <tr>
+                                        <td colspan="6" class="text-center margin-0"> Total Amount</td>
+                                        <td class="text-right margin-0" id="totalSSP"></td>
+                                        <td class="text-right margin-0" id="totalUSD"></td>
+                                        <td colspan="3"></td>
+                                      </tr>
+                                    </tfoot>
+                                  <tbody id="calculation">
+                                  {% for i in get_cost_of_production %}
+                                    <tr class="multi">
+                                        <td class="text-left">{{i.reference_number}}</td> 
+                                        <td class="text-left">{{i.particulars}}</td>
+                                        <td class="text-left">{{i.quantity}}</td>
+                                        <td class="text-center">{{i.unit}}</td>
+                                        <td class="text-right">{{i.unit_price}}</td>
+                                        <td class="text-right">{{i.discount}}</td>
+                                        <td class="text-right">
+                                            {% if i.currency == "SSP" %}
+                                            {{i.final_amount}}
+                                            {% else %}
+                                            0.0
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-right">
+                                            {% if i.currency == "USD" %}
+                                            {{i.final_amount}}
+                                            {% else %}
+                                            0.0
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                        <button class="btn btn-light border btn-sm">{{i.status}}</button>
+                                        </td> 
+                                        <td class="text-center">{{i.user}}</td> 
+                                        <td class="text-center" hidden>{{i.pub_date}}</td>
+                                     </tr>
+                                    {% endfor %}
+
+                                  </tbody>
+
+                            </table>
+
+                            </div>
+
+                          </div>
+
+                      </div>
+
+                   </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+                <div class="container" style="background-color: white;">
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-12">
+                            <div class="mt-2">Current Week Data Chart </div>
+                            <canvas id="WeekChart"></canvas>
+                        </div>
+
+                        <div class="col-md-6 mb-12">
+                            <div class="mt-2">Monthly Data Chart</div>
+                            <canvas id="MonthChart"></canvas>
+                        </div>
+
+                        <div class="col-md-6 mb-12">
+                            <div class="mt-2">Yearly Data Chart</div>
+                            <canvas id="YearChart"></canvas>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+
+            </div>
+            <!-- End of Main Content -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+
+<script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
+
+<script src="{% static 'vendor/datatables/jquery-3.7.0.js' %}"></script>
+<script src="{% static 'vendor/datatables/moment.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/dataTables.dateTime.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script> 
+
+
+<script src="{% static 'vendor/datatables/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/jszip.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/pdfmake.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/vfs_fonts.js' %}"></script>
+<script src="{% static 'vendor/datatables/buttons.html5.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/buttons.print.min.js' %}"></script> 
+
+
+<script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script> 
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script> 
+
+<script src="{% static 'vendor/datatables/dataTables.select.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/dataTables.fixedHeader.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/highcharts.js' %}"></script> 
+
+
+
+<script type="application/javascript">
+
+
+    var ctx = document.getElementById('WeekChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ labels|safe }},
+            datasets: [{
+                label: 'Total Value',
+                data: {{ values|safe }},
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            },]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'linear',  // Since we're displaying days, linear scale makes sense
+                    position: 'bottom',
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                },
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+
+     var ctx = document.getElementById('MonthChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ month_labels|safe }},
+                datasets: [
+                {
+                    label: 'Total Value',
+                    data: {{ month_values|safe }},
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'day'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+
+
+     var ctx = document.getElementById('YearChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{year_labels|safe}},
+                datasets: [{
+                    label: 'Total Value',
+                    data: {{ year_values|safe }},
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        stacked: true,
+                        
+                    },
+                    y: {
+                        beginAtZero: true,
+                        stacked: true,
+                    }
+                }
+            }
+        });
+
+</script>
+
+<script type="application/javascript">
+
+var datamax = $.fn.dataTable();
+
+  $(document).ready(function () {
+
+    // Setup - add a text input to each footer cell
+        $('#example thead tr')
+            .clone(true)
+            .addClass('filters')
+            .appendTo('#example thead');
+     
+        var table = $('#example').DataTable({
+            orderCellsTop: true,
+            fixedHeader: true,
+            initComplete: function () {
+                var api = this.api();
+     
+                // For each column
+                api
+                    .columns()
+                    .eq(0)
+                    .each(function (colIdx) {
+                        // Set the header cell to contain the input element
+                        var cell = $('.filters th').eq(
+                            $(api.column(colIdx).header()).index()
+                        );
+                        var title = $(cell).text();
+                        $(cell).html('<input type="text" placeholder="' + title + '" />');
+     
+                        // On every keypress in this input
+                        $(
+                            'input',
+                            $('.filters th').eq($(api.column(colIdx).header()).index())
+                        )
+                            .off('keyup change')
+                            .on('change', function (e) {
+                                // Get the search value
+                                $(this).attr('title', $(this).val());
+                                var regexr = '({search})'; //$(this).parents('th').find('select').val();
+     
+                                var cursorPosition = this.selectionStart;
+                                // Search the column for that value
+                                api
+                                    .column(colIdx)
+                                    .search(
+                                        this.value != ''
+                                            ? regexr.replace('{search}', '(((' + this.value + ')))')
+                                            : '',
+                                        this.value != '',
+                                        this.value == ''
+                                    )
+                                    .draw();
+                            })
+                            .on('keyup', function (e) {
+                                e.stopPropagation();
+     
+                                $(this).trigger('change');
+                                $(this)
+                                    .focus()[0]
+                                    .setSelectionRange(cursorPosition, cursorPosition);
+                            });
+                    });
+            },
+            dom: 'Bfrtip',
+            buttons: ['print','csv','excel','pdf'],
+
+
+        });
+
+
+        var minDate, maxDate;
+
+            $.fn.dataTable.ext.search.push(
+              function(settings, data) {
+                var min = minDate.val();
+                var max = maxDate.val();
+                var date = new Date(data[8]); // indicate the column number for date, start count from 0 - date = 10
+
+
+                if (
+                  (min === null && max === null) ||
+                  (min === null && date <= max) ||
+                  (min <= date && max === null) ||
+                  (min <= date && date <= max)
+
+                ) {
+                  return true;
+
+                }
+                return false;
+              }
+
+            );
+
+            function initializeMinMax() {
+              minDate = new DateTime($('#min'), {
+                format: 'MMM D, YYYY'
+              });
+              maxDate = new DateTime($('#max'), {
+                format: 'MMM D, YYYY'
+              });
+            }
+
+         
+         $(document).ready(function() {
+
+            var table = $('#example').DataTable();
+
+              $("#filter_data").click(function() {
+
+                table.draw();
+              });
+
+              $("#reset_filter_data").click(function() {
+                //ss$.fn.dataTable.ext.search.pop();
+                $("#min").val('');
+                $("#max").val('');
+                initializeMinMax();
+                table.draw();
+
+              });
+
+        });
+
+        // adding autocalculater to get total amount
+        $(document).ready(function() {
+          // Initialize DataTable
+          var table = $('#example').DataTable();
+
+          // Calculate total salary
+          function updateTotal() {
+            let total = table
+
+              .column(6, {search: 'applied'}) // Assuming salary is in the 4th column (0-indexed)
+              .data()
+              .reduce(function (acc, val) {
+                return acc + parseFloat(val.replace('$', '').replace(',', ''));
+              }, 0);
+
+            $('#totalSSP').text(total.toLocaleString());
+
+          }
+
+          function updateTotalUSD() {
+            let totalUSD = table
+
+              .column(7, {search: 'applied'}) // Assuming salary is in the 4th column (0-indexed)
+              .data()
+              .reduce(function (acc, val) {
+                return acc + parseFloat(val.replace('$', '').replace(',', ''));
+              }, 0);
+
+            $('#totalUSD').text(totalUSD.toLocaleString());
+
+          }
+
+          // Recalculate total salary on table draw
+          table.on('draw', function () {
+            updateTotal();
+            updateTotalUSD();
+          });
+
+         table.on('search', function () {
+            updateTotal();
+            updateTotalUSD();
+          });
+
+          // Initial calculation
+          updateTotal();
+          updateTotalUSD();
+
+        });
+
+
+ 
+    });
+
+
+
+
+</script>
+
+
+{% endblock content %}
+
+ 
+
+  

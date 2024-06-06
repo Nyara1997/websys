@@ -1,0 +1,303 @@
+{% load static %}
+
+{% include 'backend/header.html' %}
+
+{% block content %}
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        {% include 'backend/sidebar.html' %}
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content" style="background-color: white;">
+
+                <!-- Topbar -->
+                {% include 'backend/navbar.html' %}
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-2 mt-2">
+                        <h1 class="h4 mb-0 text-gray-800">Income Statement Report</h1>
+                        <div>
+                            <a href="" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                            <i class="fas fa-print fa-sm text-white-50"></i> Print </a> 
+                        </div>
+                    </div>
+
+
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+
+                        <div class="card-header">
+                             <div class="d-sm-flex align-items-center justify-content-between mt-2 ">
+                                <div>
+                                    <label class="text-gray-1500">Filter by Date :</label>
+                                </div>
+                                <div class="d-sm-flex align-items-center justify-content-between mt-2">
+                                    <input class="form-control mr-2" type="date" id="start-date">
+
+                                    <input class="form-control" type="date" id="end-date">
+                                    
+                                    <a class="btn btn-primary mr-1 ml-2" onclick="searchRecords()">
+                                        <i class="fas fa-search text-white"></i> 
+                                    </a>
+                                    <a class="btn btn-primary" onclick="resetFilters()">
+                                        <i class="fas fa-undo text-white"></i>
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+
+                            <div class="table-responsive">
+
+                                <table width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th style="background-color: darkblue; color: white;">Revenue</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                      <tr>
+                                          <td colspan="1">Sales (Cash & Credit)</td>
+                                          <td class="text-right">700</td>
+                                          <td class="text-right"></td>
+                                      </tr>
+                                      <tr>
+                                          <td colspan="1">Partial Sales</td>
+                                          <td class="text-right">0</td>
+                                          <td class="text-right"></td>
+                                      </tr>
+                                      <tr>
+                                          <td colspan="1">Total Revenue</td>
+                                          <td class="text-right"></td>
+                                          <td class="text-right">700</td>
+                                      </tr>
+
+                                    </tbody>
+
+                                    <thead>
+                                        <tr>
+                                            <th style="background-color: darkblue; color: white;">Expenses</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                      <tr>
+                                          <td colspan="1">Cost of Production</td>
+                                          <td class="text-right">700</td>
+                                          <td class="text-right"></td>
+                                      </tr>
+                                      <tr>
+                                          <td colspan="1">Fixed Cost</td>
+                                          <td class="text-right">0</td>
+                                          <td class="text-right"></td>
+                                      </tr>
+                                      <tr>
+                                          <td colspan="1">Maintenance</td>
+                                          <td class="text-right">0</td>
+                                          <td class="text-right"></td>
+                                      </tr>
+                                      <tr>
+                                          <td colspan="1">Other Expenses</td>
+                                          <td class="text-right">0</td>
+                                          <td class="text-right"></td>
+                                      </tr>
+                                      <tr>
+                                          <td colspan="1">Block Transportation</td>
+                                          <td class="text-right">0</td>
+                                          <td class="text-right"></td>
+                                      </tr>
+                                      <tr>
+                                          <td colspan="1">Material Transportation</td>
+                                          <td class="text-right">0</td>
+                                          <td class="text-right"></td>
+                                      </tr>
+                                      <tr>
+                                          <td colspan="1">Other Transportation</td>
+                                          <td class="text-right">0</td>
+                                          <td class="text-right"></td>
+                                      </tr>
+                                      <tr>
+                                          <td colspan="1">Total Expenses</td>
+                                          <td class="text-right"></td>
+                                          <td class="text-right">700</td>
+                                      </tr>
+
+                                    </tbody>
+
+                                    <thead>
+                                        <tr>
+                                            <th style="background-color: darkblue; color: white;">Gains</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                      <tr>
+                                          <td colspan="1">Other Income</td>
+                                          <td class="text-right">0</td>
+                                          <td class="text-right"></td>
+                                      </tr>
+                                      <tr>
+                                          <td colspan="1">Debt Repayment</td>
+                                          <td class="text-right">0</td>
+                                          <td class="text-right"></td>
+                                      </tr>
+                                      <tr>
+                                          <td colspan="1">Total Gains</td>
+                                          <td class="text-right"></td>
+                                          <td class="text-right">700</td>
+                                      </tr>
+
+                                    </tbody>
+                                    <thead>
+                                        <tr>
+                                            <th style="background-color: darkblue; color: white;">Losses</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                      <tr>
+                                          <td colspan="1">Damages</td>
+                                          <td class="text-right">0</td>
+                                          <td class="text-right"></td>
+                                      </tr>
+                                      <tr>
+                                          <td colspan="1">Bad Repayment</td>
+                                          <td class="text-right">0</td>
+                                          <td class="text-right"></td>
+                                      </tr>
+                                      <tr>
+                                          <td colspan="1">Total Losses</td>
+                                          <td class="text-right"></td>
+                                          <td class="text-right">700</td>
+                                      </tr>
+
+                                    </tbody>
+
+                                    <thead>
+                                        <tr>
+                                            <th style="background-color: darkblue; color: white;">Net Income</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                      <tr>
+                                          <td colspan="1">Net Income</td>
+                                          <td class="text-right"></td>
+                                          <td class="text-right">700</td>
+                                      </tr>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+{% endblock content %}
+
+{% include 'backend/footer.html' %}
+
+<script>
+        function searchRecords() {
+            // Get start and end dates from input fields
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+
+            // Implement logic to fetch and display records based on date range
+            // You may use AJAX to send a request to the server for filtered data
+            // Update the #records-table-body with the filtered data
+
+            // Calculate net profit based on the displayed records
+            calculateNetProfit();
+        }
+
+        function resetFilters() {
+            // Reset input fields
+            document.getElementById('start-date').value = '';
+            document.getElementById('end-date').value = '';
+
+            // Implement logic to reset filters and display all records
+            // You may reload the entire table or fetch all records from the server
+            // Update the #records-table-body with all records
+
+            // Recalculate net profit based on all records
+            calculateNetProfit();
+        }
+
+        function calculateNetProfit() {
+            // Implement logic to calculate net profit based on displayed records
+            // Update the #net-profit span with the calculated net profit
+            const netProfitElement = document.getElementById('net-profit');
+            const netProfit = performCalculation(); // Implement the actual calculation logic
+            netProfitElement.textContent = netProfit;
+        }
+
+        function performCalculation() {
+            // Implement the actual calculation logic based on displayed records
+            // For example, iterate through displayed records and calculate net profit
+            let netProfit = 0;
+
+            // Sample logic (adjust based on your data structure)
+            const records = document.querySelectorAll('#records-table-body tr');
+            records.forEach(record => {
+                const revenue = parseFloat(record.cells[1].textContent);
+                const expenses = parseFloat(record.cells[2].textContent);
+                const gains = parseFloat(record.cells[3].textContent);
+                const losses = parseFloat(record.cells[4].textContent);
+
+                netProfit += revenue - expenses + gains - losses;
+            });
+
+            return netProfit;
+        }
+
+    </script>
+
+</body>
+</html>
+
+  
+
+
+
+
+
+
+

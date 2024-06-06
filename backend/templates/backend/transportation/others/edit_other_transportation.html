@@ -1,0 +1,282 @@
+{% load static %}
+
+{% include 'backend/header.html' %}
+
+{% block content %}
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        {% include 'backend/sidebar.html' %}
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content" style="background-color: white;">
+
+                <!-- Topbar -->
+                {% include 'backend/navbar.html' %}
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                      <!--Grid column-->
+                      <div class="col-md-12 mb-5">
+
+                          <!-- Page Heading -->
+                          <div class="d-sm-flex align-items-center justify-content-between mb-3">
+                              <h4 class="h5 mb-0 text-gray-800">Edit Other Transportation </h4>
+                          </div>
+
+	                          <form action="" method="POST" enctype="multiparts/form-data" class="needs-validation" novalidate>
+
+	                          	{% csrf_token %}
+
+
+		                          	<div class="card">
+
+	                          		<div class="card-body">
+
+									                <!--Grid row-->
+									                <div class="row">
+
+									                   <!--column2-->
+									                    <div class="col-md-6">
+									                        
+																			<label for="exampleForm2">Transportation</label>
+																			<select class="browser-default custom-select" name="transportation_type">
+																			  {% for i in transportation_type %}
+																				  <option selected value="{{i.id}}">{{i.name}}
+																				  </option>
+																			  {% endfor %}
+																			</select>
+									                 
+									                    </div>
+									                    <!--end column-->
+
+									                    <!--column3-->
+									                    <div class="col-md-6">
+									                        <!-- Default input -->
+																			<label for="exampleForm2">Unit</label>
+
+																			<div class="input-group d-sm-flex align-items-center justify-content-between">
+
+																			<select class="browser-default custom-select" name="unit" required>
+																			  {% for i in units %}
+
+																			  {% if other_transportation.unit.id == i.id %}
+																			  	<option value="{{other_transportation.unit.id}}" selected>{{other_transportation.unit.name}}
+																			  	</option>
+																			  {% else %}
+																			  <option value="{{i.id}}">{{i.name}}</option>
+																			  {% endif %}
+
+																			  {% endfor %}
+																			</select>
+
+																			<div class="input-group-append">
+									                  	<a href="" class="btn btn-primary" data-toggle="modal" data-target="#add_unit" >
+									                    		<i class="fas fa-plus fa-sm"></i>
+									                    </a>
+							                      </div>
+
+								                   </div>
+									                       
+									                    </div>
+									                    <!--end column-->    
+
+									                </div>
+									                <!--Grid row-->
+
+									                <div class="row" style="margin-top: 15px; margin-bottom: 15px; ">
+
+									                 	<!--column1-->
+									                    <div class="col-md-4">
+									                        
+																			<label for="exampleForm2">Quantity</label>
+																			<input type="number" value="{{other_transportation.quantity}}" class="form-control" name="quantity" required>
+									                 
+									                    </div>
+									                    <!--end column-->
+
+									                    <!--column2-->
+									                    <div class="col-md-4">
+									                        
+																				<label for="exampleForm2">Amount</label>
+																				<input type="number" value="{{other_transportation.amount}}" class="form-control" name="amount" required>
+														                 
+									                    </div>
+									                    <!--end column-->
+
+									                     <!--column3-->
+									                    <div class="col-md-4">
+									                        <!-- Default input -->
+																				<label for="exampleForm2">Currency</label>
+
+																				<div class="input-group d-sm-flex align-items-center justify-content-between">
+
+																				<select class="browser-default custom-select" name="currency" required>
+																				  
+																				  {% for i in currency_type %}
+
+																				  {% if other_transporation.currency.id == i.id %}
+																				  	<option value="{{other_transporation.currency.id}}" selected>{{other_transporation.currency.name}}
+																				  	</option>
+																				  {% else %}
+																				  	<option value="{{i.id}}">{{i.name}}</option>
+																				  {% endif %}
+
+																				  {% endfor %}
+																				</select>
+																				<div class="input-group-append">
+											                  	<a href="" class="btn btn-primary" data-toggle="modal" data-target="#add_currency" >
+											                    		<i class="fas fa-plus fa-sm"></i>
+											                    </a>
+									                      </div>
+
+										                   </div>
+									                       
+									                    </div>
+									                    <!--end column-->
+									                    			                 
+									                </div>
+
+									                <div class="row" style="margin-top: 15px; margin-bottom: 15px; ">
+
+									                 	<div class="col-md-12">
+
+									                 		<div class="form-group">
+															  			<label for="exampleFormControlTextarea1">Description</label>
+																		  <textarea class="form-control rounded-0" id="exampleFormControlTextarea1" rows="5" name="description" required>
+																		  	{{other_transportation.description | safe }}
+																		  </textarea>
+																		</div>
+									                 		
+									                 	</div>    			                 
+									                </div>
+
+
+											             <div class="text-center text-md-left">
+											                <button class="btn btn-primary" type="submit">Submit</button>
+											                <a href="{% url 'other_transportation' %}" class="btn btn-danger">Cancel</a>
+											            </div>
+
+									               </div>
+                          
+                        				</div>
+
+				            				</form>   
+
+
+				            	<div class="modal fade" id="add_currency" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title " id="exampleModalLabel">Add Currency</h5>
+                                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+
+                                <form action="" method="POST" enctype="multiparts/form-data">
+                                    {% csrf_token %}
+
+                                    <div class="container mt-3 mb-3">
+                                      <div class="row">
+                                        <label for="exampleForm2">Currency</label>
+                                        <input type="text" class="form-control" name="currency" id="id_unit" required>
+                                      </div>
+                                      
+                                    </div>
+                                    <div class="modal-footer">
+                                          <button class="btn btn-danger" type="submit">Add</button>
+                                          <button class="btn btn-primary" type="button" data-dismiss="modal">Cancel</button>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+
+                   <div class="modal fade" id="add_unit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+
+                      <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title " id="exampleModalLabel">Add Unit</h5>
+                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+
+                                    <form action="" method="POST" enctype="multiparts/form-data">
+                                        {% csrf_token %}
+
+                                        <div class="container mt-3 mb-3">
+                                          <div class="row">
+                                            <label for="exampleForm2">Unit</label>
+                                            <input type="text" class="form-control" name="units" id="id_unit" required>
+                                          </div>
+                                          
+                                        </div>
+                                        <div class="modal-footer">
+                                              <button class="btn btn-danger" type="submit">Add</button>
+                                              <button class="btn btn-primary" type="button" data-dismiss="modal">Cancel</button>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>      
+                       </div>
+
+                   </div>
+                      <!--Grid column-->
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+  <script type="text/javascript">
+    
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+      (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+          .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+              if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+              }
+
+              form.classList.add('was-validated')
+            }, false)
+          })
+      })()
+
+
+  </script>
+
+
+{% endblock content %}
+
+{% include 'backend/footer.html' %}
